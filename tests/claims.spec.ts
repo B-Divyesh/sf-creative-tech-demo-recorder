@@ -74,10 +74,23 @@ test('@claim:explicit-capture asks for screen access only after the record actio
 });
 
 test('@claim:keyboard-motion supports keyboard focus and reduced-motion settings', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name === 'mobile'); await page.emulateMedia({ reducedMotion: 'reduce' }); await page.goto('/');
+  test.skip(testInfo.project.name === 'mobile'); await installSyntheticCapture(page); await page.emulateMedia({ reducedMotion: 'reduce' }); await page.goto('/');
   await page.keyboard.press('Tab'); await expect(page.locator('.skip-link')).toBeFocused(); await page.keyboard.press('Enter'); await expect(page.locator('#main')).toBeVisible();
   const duration = await page.getByRole('link', { name: 'Try it with sample data' }).evaluate((element) => getComputedStyle(element).transitionDuration);
   expect(Number.parseFloat(duration)).toBeLessThanOrEqual(0.001);
+  await page.getByRole('button', { name: /Choose a tab/ }).focus(); await page.keyboard.press('Enter'); await expect(page.getByText('RECORDING / LOCAL')).toBeVisible();
+  await page.keyboard.press('m'); await expect(page.locator('#beat-label')).not.toHaveText(/NOT MARKED/); await page.keyboard.press('s'); await expect(page.getByRole('button', { name: 'Export WebM' })).toBeVisible({ timeout: 15_000 });
+});
+
+test('@claim:microphone-mix adds an optional microphone track to the recording stream', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name === 'mobile'); await installSyntheticCapture(page);
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator.mediaDevices, 'getUserMedia', { configurable: true, value: async () => { const context = new AudioContext(); const oscillator = context.createOscillator(); const destination = context.createMediaStreamDestination(); oscillator.connect(destination); oscillator.start(); return destination.stream; } });
+    const NativeRecorder = MediaRecorder;
+    window.MediaRecorder = new Proxy(NativeRecorder, { construct(target, argumentsList) { (window as unknown as { mixedAudioTracks: number }).mixedAudioTracks = (argumentsList[0] as MediaStream).getAudioTracks().length; return Reflect.construct(target, argumentsList); } });
+  });
+  await page.goto('/'); await page.getByLabel('Add microphone').check(); await page.getByRole('button', { name: /Choose a tab/ }).click();
+  await expect(page.getByText('RECORDING / LOCAL')).toBeVisible(); expect(await page.evaluate(() => (window as unknown as { mixedAudioTracks: number }).mixedAudioTracks)).toBe(1); await page.keyboard.press('s');
 });
 
 test('@claim:webm-export downloads the sample recording as WebM', async ({ page }, testInfo) => {
@@ -130,6 +143,12 @@ test('@claim:license-restore verifies a pasted license through the production AP
   await page.route('https://api.sociobot.in/api/v1/products/creative-tech-demo-recorder/verify?license=pasted-token', (route) => { verificationUrl = route.request().url(); return route.fulfill({ json: { valid: true, reason: 'ok', expires_at: null } }); });
   await page.goto('/'); await page.getByText('Have a license?').click(); await page.getByLabel('Paste license token').fill('pasted-token'); await page.getByRole('button', { name: 'Verify license' }).click();
   await expect(page.getByText('Loop Pass active on this browser.')).toBeVisible(); expect(verificationUrl).toMatch(/^https:\/\/api\.sociobot\.in\/api\/v1\//);
+});
+
+test('@claim:license-revocation keeps paid features locked for an inactive license', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name === 'mobile'); await page.route('https://api.sociobot.in/api/v1/products/creative-tech-demo-recorder/verify?license=revoked-token', (route) => route.fulfill({ json: { valid: false, reason: 'revoked', expires_at: null } }));
+  await page.goto('/'); await page.getByText('Have a license?').click(); await page.getByLabel('Paste license token').fill('revoked-token'); await page.getByRole('button', { name: 'Verify license' }).click();
+  await expect(page.getByText('License no longer active. Free recording remains available.')).toBeVisible(); await expect(page.getByRole('link', { name: 'Buy Loop Pass' })).toBeVisible();
 });
 
 test('@claim:live-checkout redirects from Sociobot to the hosted $9 Dodo checkout', async ({ page, request }, testInfo) => {

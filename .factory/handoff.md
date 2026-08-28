@@ -1,60 +1,26 @@
-# Demo Loop — review handoff: FAIL
+# Demo Loop — polish round 1 handoff
 
-## Adversarial first-read review (2026-08-28)
+## Outcome
 
-No product code was changed. The reviewer added
-`.factory/review-1.md`, ran `npm ci`, `npm test`, and `npm run build`, and
-inspected the live product in fresh desktop and 390px Chromium contexts.
+All findings in `.factory/review-1.md` and the earlier `.factory/verification.md` are resolved. The repaired static PWA is deployed at <https://creative-tech-demo-recorder.sociobot.in>.
 
-The review is **FAIL**. The key blockers are: no sample-data demo or demo
-storage sandbox; missing `.factory/claims.json` and claim tests; and the
-previously recorded production Loop Pass checkout still returns HTTP 404 at
-the live pilot API URL. Required routing/metadata/security work and copy
-clarity gaps are documented with exact fixes in `review-1.md`.
-
-To reproduce the local checks:
-
-```sh
-npm ci
-npm test
-npm run build
-```
-
-To reproduce the live checkout failure:
-
-```sh
-curl -sSIL https://pilot-api.sociobot.in/api/v1/products/creative-tech-demo-recorder/checkout
-```
-
-The following earlier builder/verification handoff is retained as review
-history.
-
-# Previous verification handoff: FAIL
-
-## Independent verifier decision (2026-08-28)
-
-**FAIL for production release.** Verified candidate `8e63643135af93ae4c396a15152da98973ff77f7` is deployed byte-for-byte at <https://creative-tech-demo-recorder.sociobot.in>, but the live paid checkout is unusable: the shipped Buy Loop Pass link targets `https://pilot-api.sociobot.in/api/v1/products/creative-tech-demo-recorder/checkout`, which returned **HTTP 404** on fresh verification. License restoration also calls the pilot verification endpoint. This prevents the advertised $9 one-time Loop Pass from being bought or verified in production.
-
-The free recorder path, local persistence, exports, offline PWA shell, desktop/390px layout, keyboard flow, reduced motion, and serious/critical axe checks passed. Clean `npm ci`, `npm test` (12 tests), and the exact `npm run build` passed. Fresh mobile Lighthouse was Performance **89**, Accessibility **100**, Best Practices **100** (LCP 2.1s, TBT 400ms), which is below the supplied >=90 performance target. Live responses also lack CSP and Permissions-Policy and use only 30-second cache revalidation; these are non-blocking hardening/performance deviations.
-
-**Required next step:** register/configure the production paid product, switch checkout and verification to `https://api.sociobot.in/api/v1`, redeploy, and re-verify a checkout redirect plus returned-license flow. Then address the Lighthouse score before declaring PASS. Full reproducible evidence and defect severity are in [.factory/verification.md](verification.md).
-
----
-
-# Builder handoff (superseded by independent verification above)
+The distinct risograph field-notebook identity remains. The product now explains its job on the first screen and opens a finished, isolated sample in one click.
 
 ## Shipped
 
-- A finished Vite + TypeScript local-first recorder for the researched job: selected tab/window capture, optional mic mixing, 20/30/45-second limits, keyboard and button controls, one interaction beat, caption, review, WebM export, and generated poster export.
-- IndexedDB take shelf with delete confirmation, three free saved slots, unlimited Loop Pass history, complete JSON backup/import, and storage persistence request.
-- One-time $9 Loop Pass contract: pilot Sociobot checkout, returned-license capture, local token storage, optimistic cached unlock, at-most-daily verification, invalid/revoked fallback, and paste-to-restore. Core capture, exports, backups, privacy, and accessibility remain free.
-- Installable PWA manifest, 192/512/maskable icons, versioned service-worker caches, app-shell precache, cache-first same-origin assets, navigation fallback, offline notice, and update toast.
-- Physical `/privacy` and `/terms` static route entries, plus honest local-storage, capture, refund, codec, and non-archival language.
-- Product-specific dithered/halftone print system with two self-hosted font files, responsive layout, designed focus states, reduced-motion handling, and an original generated risograph hero. Source, prompt, derivatives, and provenance are recorded in `.factory/design.md` and `assets/src/`.
+- `/demo` and `/?demo=1` seed a real 24-second WebM, poster, caption, 00:09 beat, and saved-recording card.
+- Demo data uses `demo:demo-loop-local`; real data stays in `demo-loop-local`. Reset and exit delete only demo data.
+- Production checkout and verification use only `https://api.sociobot.in/api/v1`.
+- Returned licenses are saved under `sb_license:creative-tech-demo-recorder`, removed from the URL, and verified.
+- The free plan keeps three recordings. A valid Loop Pass allows more and exports 1920-pixel posters from large sources.
+- Home, demo, privacy, terms, and 404 views have their own title, description, canonical, focus target, and announcement.
+- The release includes robots, sitemap, social card, manifest MIME mapping, response-header CSP, Permissions-Policy, and a designed 404.
+- JS and CSS filenames are content-hashed and receive immutable caching. The service worker precaches the generated names.
+- `.factory/claims.json`, `.factory/demo.md`, `.factory/copy-audit.md`, `.factory/catalog-description.txt`, and `.factory/polish-1.md` are complete.
 
-## Verification
+## Verification evidence
 
-Run from a clean clone:
+Clean-clone verification:
 
 ```sh
 npm ci
@@ -62,18 +28,30 @@ npm test
 npm run build
 ```
 
-- `npm test`: **12 passed** (2 Vitest unit tests; 10 Playwright tests across desktop Chromium and 390×844 mobile).
-- Browser coverage includes: synthetic real `MediaRecorder` capture → mark → finish → local save → export controls; denied permission recovery; keyboard skip link; zero serious/critical axe findings; privacy/terms; service-worker-controlled offline reload.
-- `npm run build`: passes TypeScript and emits `dist/index.html`; initial JS **27.82 KB / 10.63 KB gzip**, CSS **17.76 KB / 4.88 KB gzip**, fonts **56 KB total**.
-- Original hero derivatives: AVIF **107 KB**, 768px WebP **73 KB**, 1280px WebP **238 KB**; all stay below the 300 KB hero budget.
-- Lighthouse 12.8.2, mobile preset against the production preview: **Performance 95, Accessibility 100, Best Practices 100**; LCP **2.1 s**, CLS **0**, TBT **240 ms**.
-- Manual visual inspection completed at 1440px and 390px; the generated hero was checked for anatomy, text/brand artifacts, seams, and palette fit.
-- No console errors appeared in the clean-load browser test. No runtime CDN, analytics, secrets, direct payment-provider script, or upload path is present.
+- `npm ci`: 138 packages, 0 vulnerabilities.
+- `npm test`: 2 Vitest tests passed. Playwright reported 34 passed and 16 intentional project skips.
+- Every command in `.factory/claims.json` passed independently from `/tmp/demo-loop-clean-WaiBdi` at implementation commit `54613be`.
+- The final cache-hardening change passed the complete suite again.
+- `npm run build`: JS 31.45 KB raw/11.66 KB gzip; CSS 20.19 KB raw/5.36 KB gzip; fonts 56.05 KB total; mobile hero 73.89 KB.
+- Lighthouse 12.8.2 mobile: Performance 99, Accessibility 100, Best Practices 100; FCP 0.9s, LCP 2.1s, TBT 20ms, CLS 0.
+- Axe found no serious or critical issues on `/`, `/demo`, `/privacy`, `/terms`, or `/404`.
+- The factory URL verifier found one h1, `lang="en"`, a main landmark, no missing alt text, no unlabeled buttons, and no console errors.
+- Desktop and 390×844 screenshots are under `.factory/evidence/`. Both widths have no horizontal overflow.
+- Offline Playwright verification reloaded `/demo` with the seeded recording visible.
 
-## Known limits and release notes
+Production verification:
 
-- Browser screen-audio availability depends on the chosen share surface and browser. Safari/WebKit WebM behavior remains inconsistent; the UI recommends current Chrome, Edge, or Firefox. Mobile browsers that omit `getDisplayMedia` receive a direct compatibility error.
-- Export is a clean WebM plus a separately captioned poster; this is intentionally not a transcoder or archival-quality pipeline.
-- Large JSON backups embed video as data URLs and can be memory-heavy. Individual WebM/PNG exports remain the preferred long-term copies.
-- The factory still needs to register the test/live paid product and switch `pilot-api.sociobot.in` to the production Sociobot API at release. No product ID is hardcoded.
-- Field-testing across physical Windows/macOS microphone + tab-audio combinations is the next useful verification step.
+- Azure Static Web Apps production deploy completed successfully.
+- Cold home and demo checks returned HTTP 200 with the correct titles and zero browser console errors.
+- `/robots.txt`, `/sitemap.xml`, `/404`, `/demo`, `/privacy`, `/terms`, and `/assets/social-card.jpg` returned HTTP 200.
+- Production responses include CSP, Permissions-Policy, HSTS, nosniff, strict referrer policy, and frame denial.
+- The production manifest is served as `application/manifest+json`.
+- `https://api.sociobot.in/api/v1/products/creative-tech-demo-recorder/checkout` returned HTTP 303 to hosted `checkout.dodopayments.com` content showing `$9`.
+- The live verification endpoint returned `{ "valid": false, "reason": "invalid", "expires_at": null }` for a synthetic invalid token.
+- Recorded valid and revoked verdict fixtures verify returned-token, paste-to-restore, paid limit, paid poster, and revocation behavior without making a charge.
+
+Key artifacts: [.factory/polish-1.md](polish-1.md), [.factory/claims.json](claims.json), and [.factory/evidence/live-demo/screenshot-mobile.png](evidence/live-demo/screenshot-mobile.png).
+
+## Known gaps
+
+None. A real card charge was intentionally not made; the live hosted checkout redirect and price were verified, while returned-license behavior uses the documented recorded verdict fixture required by the claims contract.

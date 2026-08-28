@@ -1,4 +1,4 @@
-const VERSION = 'demo-loop-v2';
+const VERSION = 'demo-loop-v3';
 const SHELL = `${VERSION}-shell`;
 const RUNTIME = `${VERSION}-runtime`;
 const PRECACHE = [
@@ -9,8 +9,8 @@ const PRECACHE = [
   '/404',
   '/offline.html',
   '/manifest.webmanifest',
-  '/assets/app.js',
-  '/assets/index.css',
+  '__APP_JS__',
+  '__APP_CSS__',
   '/fonts/bricolage-grotesque.woff2',
   '/fonts/ibm-plex-mono.woff2',
   '/assets/hero-risograph-768.webp',

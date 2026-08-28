@@ -19,6 +19,7 @@ See [.factory/demo.md](.factory/demo.md) for the storage contract and verificati
 ## What it does
 
 - Requests screen access only after you choose to record.
+- Adds microphone audio when selected and available.
 - Offers 20, 30, and 45 second recording limits.
 - Marks one response with the M key and ends early with S.
 - Exports WebM video, a PNG poster, and a complete JSON backup.

@@ -42,6 +42,13 @@
     "sandbox": "fresh reduced-motion context; use the keyboard skip link and assert motion duration is effectively zero"
   },
   {
+    "id": "microphone-mix",
+    "claim": "Microphone audio can be added to a screen recording.",
+    "where": "recorder control, README",
+    "test": "npm run test:e2e -- --grep @claim:microphone-mix",
+    "sandbox": "fresh real context with synthetic screen and microphone streams; enable the microphone and assert its audio track enters MediaRecorder"
+  },
+  {
     "id": "webm-export",
     "claim": "Exports a recording as WebM.",
     "where": "home, recorder, README",
@@ -96,6 +103,13 @@
     "where": "Loop Pass section, privacy, README",
     "test": "npm run test:e2e -- --grep @claim:license-restore",
     "sandbox": "fresh real context; paste a token, mock the documented verdict, assert unlock and the exact production API origin"
+  },
+  {
+    "id": "license-revocation",
+    "claim": "An inactive or revoked license does not enable paid features.",
+    "where": "terms, license status",
+    "test": "npm run test:e2e -- --grep @claim:license-revocation",
+    "sandbox": "fresh real context; restore a token against a recorded revoked verdict and assert the free locked state"
   },
   {
     "id": "live-checkout",
