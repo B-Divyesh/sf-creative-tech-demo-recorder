@@ -1,4 +1,16 @@
-# Demo Loop — build handoff
+# Demo Loop — verification handoff: FAIL
+
+## Independent verifier decision (2026-08-28)
+
+**FAIL for production release.** Verified candidate `8e63643135af93ae4c396a15152da98973ff77f7` is deployed byte-for-byte at <https://creative-tech-demo-recorder.sociobot.in>, but the live paid checkout is unusable: the shipped Buy Loop Pass link targets `https://pilot-api.sociobot.in/api/v1/products/creative-tech-demo-recorder/checkout`, which returned **HTTP 404** on fresh verification. License restoration also calls the pilot verification endpoint. This prevents the advertised $9 one-time Loop Pass from being bought or verified in production.
+
+The free recorder path, local persistence, exports, offline PWA shell, desktop/390px layout, keyboard flow, reduced motion, and serious/critical axe checks passed. Clean `npm ci`, `npm test` (12 tests), and the exact `npm run build` passed. Fresh mobile Lighthouse was Performance **89**, Accessibility **100**, Best Practices **100** (LCP 2.1s, TBT 400ms), which is below the supplied >=90 performance target. Live responses also lack CSP and Permissions-Policy and use only 30-second cache revalidation; these are non-blocking hardening/performance deviations.
+
+**Required next step:** register/configure the production paid product, switch checkout and verification to `https://api.sociobot.in/api/v1`, redeploy, and re-verify a checkout redirect plus returned-license flow. Then address the Lighthouse score before declaring PASS. Full reproducible evidence and defect severity are in [.factory/verification.md](verification.md).
+
+---
+
+# Builder handoff (superseded by independent verification above)
 
 ## Shipped
 
