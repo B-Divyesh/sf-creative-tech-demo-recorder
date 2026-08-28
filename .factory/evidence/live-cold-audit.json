@@ -1,0 +1,65 @@
+{
+  "routes": {
+    "/": {
+      "title": "Demo Loop — Record browser interaction demos",
+      "h1": "Record a portfolio interaction demo",
+      "severeAxe": 0,
+      "main": 1
+    },
+    "/demo": {
+      "title": "Demo — Demo Loop",
+      "h1": "Review a sample interaction recording",
+      "severeAxe": 0,
+      "main": 1
+    },
+    "/privacy": {
+      "title": "Privacy — Demo Loop",
+      "h1": "Privacy",
+      "severeAxe": 0,
+      "main": 1
+    },
+    "/terms": {
+      "title": "Terms — Demo Loop",
+      "h1": "Terms",
+      "severeAxe": 0,
+      "main": 1
+    },
+    "/404": {
+      "title": "Page not found — Demo Loop",
+      "h1": "Page not found",
+      "severeAxe": 0,
+      "main": 1
+    },
+    "/missing-page": {
+      "title": "Page not found — Demo Loop",
+      "h1": "Page not found",
+      "severeAxe": 0,
+      "main": 1
+    }
+  },
+  "demo": {
+    "banner": true,
+    "sample": true,
+    "databases": [
+      "demo:demo-loop-local"
+    ]
+  },
+  "mobile": {
+    "overflow": 0,
+    "nav": true,
+    "errors": []
+  },
+  "license": {
+    "url": "https://creative-tech-demo-recorder.sociobot.in/",
+    "stored": "live-return-fixture",
+    "verified": "https://api.sociobot.in/api/v1/products/creative-tech-demo-recorder/verify?license=live-return-fixture"
+  },
+  "offline": {
+    "heading": "Review a sample interaction recording",
+    "sample": true
+  },
+  "requestOrigins": [
+    "https://creative-tech-demo-recorder.sociobot.in"
+  ],
+  "errors": []
+}

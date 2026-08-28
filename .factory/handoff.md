@@ -32,7 +32,7 @@ npm run build
 - `npm test`: 2 Vitest tests passed. Playwright reported 36 passed and 18 intentional cross-project skips.
 - Every command in `.factory/claims.json` passed independently from `/tmp/demo-loop-final-tbO8Hd` at repair commit `0fd5498`.
 - The clean-clone `npm run build` also passed after the claim replay.
-- `npm run build`: JS 31.45 KB raw/11.66 KB gzip; CSS 20.19 KB raw/5.36 KB gzip; fonts 56.05 KB total; mobile hero 73.89 KB.
+- `npm run build`: JS 31.44 KB raw/11.66 KB gzip; CSS 20.19 KB raw/5.36 KB gzip; fonts 56.05 KB total; mobile hero 73.89 KB.
 - Lighthouse 12.8.2 mobile: Performance 99, Accessibility 100, Best Practices 100; FCP 0.9s, LCP 2.1s, TBT 20ms, CLS 0.
 - Axe found no serious or critical issues on `/`, `/demo`, `/privacy`, `/terms`, or `/404`.
 - The factory URL verifier found one h1, `lang="en"`, a main landmark, no missing alt text, no unlabeled buttons, and no console errors.
@@ -54,4 +54,4 @@ Key artifacts: [.factory/polish-1.md](polish-1.md), [.factory/claims.json](claim
 
 ## Known gaps
 
-None. A real card charge was intentionally not made; the live hosted checkout redirect and price were verified, while returned-license behavior uses the documented recorded verdict fixture required by the claims contract.
+No unresolved product gaps. A real card charge was intentionally not made. The hosted checkout and price were checked live; license returns use the required recorded verdict fixture.
