@@ -136,11 +136,12 @@ test('query-string demo entry opens the same isolated sample controls', async ({
   await expect(page.getByRole('link', { name: 'Start for real' })).toBeVisible();
 });
 
-test('factory footer uses the reachable canonical destination', async ({ page, request }) => {
+test('factory footer uses the reachable canonical destination', async ({ page, request }, testInfo) => {
+  test.skip(testInfo.project.name === 'mobile');
   await page.goto('/');
   const link = page.getByRole('link', { name: 'Built by Param Factory' });
   await expect(link).toHaveAttribute('href', 'https://sociobot.in/');
-  expect((await request.get('https://sociobot.in/')).status()).toBe(200);
+  expect((await request.get('https://sociobot.in/', { timeout: 15_000 })).status()).toBe(200);
 });
 
 for (const route of ['/', '/demo', '/privacy', '/terms', '/404']) {

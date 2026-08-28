@@ -102,7 +102,7 @@
     "claim": "A restored license stores its token and latest verification result in this browser after Sociobot verifies it.",
     "where": "Loop Pass section, privacy, README",
     "test": "npm run test:e2e -- --grep @claim:license-restore",
-    "sandbox": "fresh real context; paste a token, mock the documented verdict, assert unlock and the exact production API origin"
+    "sandbox": "fresh real context; paste a token, mock the documented verdict, assert both local keys, unlock, and the exact production API origin"
   },
   {
     "id": "license-revocation",

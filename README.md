@@ -1,6 +1,6 @@
 # Demo Loop
 
-Record a selected browser tab or window for 20, 30, or 45 seconds. Mark one interaction beat, then export that frame as a PNG poster.
+Record a selected browser tab or window for 20, 30, or 45 seconds. Mark one interaction beat, then export WebM video and that frame as a PNG poster.
 
 Demo Loop is for creative-technology students preparing portfolio work. Recordings stay in browser storage and remain after a reload.
 
