@@ -29,9 +29,9 @@ npm run build
 ```
 
 - `npm ci`: 138 packages, 0 vulnerabilities.
-- `npm test`: 2 Vitest tests passed. Playwright reported 34 passed and 16 intentional project skips.
-- Every command in `.factory/claims.json` passed independently from `/tmp/demo-loop-clean-WaiBdi` at implementation commit `54613be`.
-- The final cache-hardening change passed the complete suite again.
+- `npm test`: 2 Vitest tests passed. Playwright reported 36 passed and 18 intentional cross-project skips.
+- Every command in `.factory/claims.json` passed independently from `/tmp/demo-loop-final-tbO8Hd` at repair commit `0fd5498`.
+- The clean-clone `npm run build` also passed after the claim replay.
 - `npm run build`: JS 31.45 KB raw/11.66 KB gzip; CSS 20.19 KB raw/5.36 KB gzip; fonts 56.05 KB total; mobile hero 73.89 KB.
 - Lighthouse 12.8.2 mobile: Performance 99, Accessibility 100, Best Practices 100; FCP 0.9s, LCP 2.1s, TBT 20ms, CLS 0.
 - Axe found no serious or critical issues on `/`, `/demo`, `/privacy`, `/terms`, or `/404`.

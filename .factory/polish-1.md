@@ -24,7 +24,7 @@ Candidate `8e63643135af93ae4c396a15152da98973ff77f7` was repaired from review co
 
 ## Additional acceptance evidence
 
-- `npm test`: 2 Vitest tests passed; Playwright reported 34 passed and 16 intentional cross-project skips across desktop and 390×844 projects.
+- `npm test`: 2 Vitest tests passed; Playwright reported 36 passed and 18 intentional cross-project skips across desktop and 390×844 projects.
 - Axe: no serious or critical findings on `/`, `/demo`, `/privacy`, `/terms`, or `/404`.
 - Mobile: no horizontal overflow; primary controls are at least 44 CSS pixels; primary navigation remains visible.
 - Offline: `/demo` reloaded with its sample recording after the browser context went offline.
