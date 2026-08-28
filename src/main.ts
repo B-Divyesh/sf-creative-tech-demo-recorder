@@ -6,7 +6,7 @@ import type { CaptureStatus, DemoTake } from './types';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 const SITE = 'https://creative-tech-demo-recorder.sociobot.in';
-const BUILD = '1.2.0';
+const BUILD = '1.3.0';
 const escapeHtml = (value: string) => value.replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character] || character);
 
 type PageMeta = { title: string; description: string; canonical: string };
@@ -49,8 +49,8 @@ const hero = `
   <section class="hero" aria-labelledby="hero-title">
     <div class="hero-copy">
       <p class="eyebrow"><span>PORTFOLIO TOOL</span> / BROWSER RECORDER</p>
-      <h1 id="hero-title">Record a portfolio interaction demo</h1>
-      <p class="hero-lede">For creative-technology students who need a short video of a browser prototype working.</p>
+      <h1 id="hero-title">Record a browser interaction for your portfolio</h1>
+      <p class="hero-lede">For creative-technology students who need a 20–45 second video of a prototype working.</p>
       <div class="hero-actions"><a class="button button-coral" href="/demo">Try it with sample data</a><span class="action-note">Opens a finished recording, poster, and marked beat.</span></div>
       <ul class="hero-facts"><li>Media stays in this browser</li><li>Nothing is uploaded</li><li>Choose 20, 30, or 45 seconds</li></ul>
     </div>
@@ -66,7 +66,7 @@ const hero = `
 
 function recorderMarkup(demo: boolean): string {
   return `
-    ${demo ? `<section class="demo-intro" aria-labelledby="demo-title"><p class="eyebrow"><span>SAMPLE WORKSPACE</span> / ISOLATED</p><h1 id="demo-title">Review a sample interaction recording</h1><p>The controller changes a projected shape field. The marked beat shows the exact response.</p></section>` : ''}
+    ${demo ? `<section class="demo-intro" aria-labelledby="demo-title"><p class="eyebrow"><span>SAMPLE WORKSPACE</span> / ISOLATED</p><h1 id="demo-title">Review a sample recording</h1><p>See the controller response at the marked beat.</p></section>` : ''}
     <section class="recorder-section${demo ? ' demo-recorder' : ''}" id="recorder" ${demo ? 'aria-label="Sample recording and recording setup"' : 'aria-labelledby="recorder-title"'}>
       ${demo ? '' : `<div class="section-heading">
         <p class="eyebrow">RECORD YOUR INTERACTION</p>
@@ -108,10 +108,10 @@ const boundaries = `
   <section class="boundaries-section" aria-labelledby="boundaries-title"><p class="eyebrow">PRIVACY AND LIMITS</p><h2 id="boundaries-title">What Demo Loop does not do</h2><ul><li>It does not upload recordings.</li><li>It does not replace an archival video editor.</li></ul><a href="/privacy">Read the privacy details</a></section>`;
 
 const unlock = `
-  <section class="unlock-section" id="unlock" aria-labelledby="unlock-title"><div class="unlock-mark" aria-hidden="true"><span>4+</span></div><div class="unlock-copy"><p class="eyebrow">LOOP PASS / ONE-TIME</p><h2 id="unlock-title">Loop Pass removes the three-recording limit</h2><p>The free plan saves three recordings. WebM, PNG, and JSON exports remain available.</p><p>Loop Pass costs $9 once. It saves more than three recordings and exports 1920-pixel posters from large sources.</p><ul><li>$9 one-time checkout through Sociobot</li><li>Restore the license on another device</li><li>No three-recording limit after verification</li></ul></div><div class="license-box"><div class="price"><b>$9</b><span>USD<br>ONE TIME</span></div><a class="button button-coral button-wide" href="${checkoutUrl}" id="buy-link">Buy Loop Pass</a><p id="license-state" role="status">No license on this browser.</p><details><summary>Have a license?</summary><form id="license-form"><label for="license-token">Paste license token</label><input id="license-token" required autocomplete="off" /><button class="button button-ink" type="submit" aria-label="Verify license">Verify license</button></form></details><small>Sociobot/Dodo is the merchant of record. <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></small></div></section>`;
+  <section class="unlock-section" id="unlock" aria-labelledby="unlock-title"><div class="unlock-mark" aria-hidden="true"><span>4+</span></div><div class="unlock-copy"><p class="eyebrow">LOOP PASS / ONE-TIME</p><h2 id="unlock-title">Loop Pass removes the three-recording limit</h2><p>The free plan saves three recordings. WebM, PNG, and JSON exports remain available.</p><p>Loop Pass costs $9 once. It saves more than three recordings and exports 1920-pixel posters from large sources.</p><ul><li>$9 one-time checkout through Sociobot</li><li>Restore the license on another device</li><li>No three-recording limit after verification</li></ul></div><div class="license-box"><div class="price"><b>$9</b><span>USD<br>ONE TIME</span></div><a class="button button-coral button-wide" href="${checkoutUrl}" id="buy-link">Buy Loop Pass</a><p id="license-state" role="status">No license on this browser.</p><details><summary>Have a license?</summary><form id="license-form"><label for="license-token">Paste license token</label><input id="license-token" required autocomplete="off" /><button class="button button-ink" type="submit" aria-label="Verify license">Verify license</button></form></details><p class="checkout-note">Checkout starts on Sociobot and opens a Dodo payment page. <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></p></div></section>`;
 
 function homePage(demo: boolean): void {
-  setMeta(demo ? { title: 'Demo — Demo Loop', description: 'Try a finished browser interaction recording in an isolated sample workspace.', canonical: '/demo' } : { title: 'Demo Loop — Record browser interaction demos', description: 'Record a browser prototype, mark its interaction beat, and export a WebM and poster for your portfolio.', canonical: '/' });
+  setMeta(demo ? { title: 'Demo — Demo Loop', description: 'Try a finished browser interaction recording in an isolated sample workspace.', canonical: '/demo' } : { title: 'Demo Loop — Record browser interactions', description: 'Record a browser prototype, mark its interaction beat, and export a WebM and poster for your portfolio.', canonical: '/' });
   app.innerHTML = shell(`<main id="main">${demo ? '' : hero}${recorderMarkup(demo)}${boundaries}${demo ? '' : unlock}</main>`, demo);
   wirePageChrome(demo);
   void wireRecorder(demo ? 'demo' : 'real', routeController.signal);
@@ -121,15 +121,15 @@ function legalPage(kind: 'privacy' | 'terms'): void {
   const privacy = kind === 'privacy';
   setMeta(privacy ? { title: 'Privacy — Demo Loop', description: 'How Demo Loop stores recordings and license data.', canonical: '/privacy' } : { title: 'Terms — Demo Loop', description: 'Terms for recording, local storage, exports, and Loop Pass.', canonical: '/terms' });
   const body = privacy ? `
-    <p class="lede">Your recordings remain under your control.</p><h2>What stays local</h2><p>Recordings, captions, beat markers, and posters use browser storage. Demo Loop does not upload them.</p><h2>Screen and microphone access</h2><p>The browser asks after you choose to record. Microphone access is optional.</p><h2>Purchases</h2><p>Sociobot and Dodo handle checkout. Demo Loop stores your license token and cached verdict locally.</p><h2>Network requests</h2><p>Checkout opens on Sociobot. License verification uses the Sociobot API after you add a license.</p><h2>Your control</h2><p>Export a JSON backup or delete a recording.</p>` : `
-    <p class="lede">Use Demo Loop only for material you may record.</p><h2>The tool</h2><p>Demo Loop creates short WebM recordings and PNG posters. Browser capture and codec support vary.</p><h2>Your responsibility</h2><p>You need permission to record each screen, sound, and work. Do not capture private or confidential material without permission.</p><h2>Loop Pass</h2><p>Loop Pass costs $9 once. It saves more than three recordings and exports 1920-pixel posters from large sources.</p><p>Sociobot/Dodo is the merchant of record. It handles refunds. A revoked license stops paid features.</p><p>Recording, WebM, PNG, and JSON backup exports remain free.</p><h2>Local storage</h2><p>Export work you need to keep. Device cleanup, private browsing, or manual deletion can remove browser storage.</p><h2>Changes</h2><p>These terms are effective 28 August 2026. Material changes will appear on this page.</p>`;
+    <p class="lede">Your recordings remain under your control.</p><h2>What stays local</h2><p>Recordings, captions, beat markers, and posters use browser storage. Demo Loop does not upload them.</p><h2>Screen and microphone access</h2><p>The browser asks after you choose to record. Microphone access is optional.</p><h2>Purchases</h2><p>Checkout starts on Sociobot and opens a Dodo payment page. Demo Loop stores your license token and last verification result in this browser.</p><h2>Network requests</h2><p>License verification uses the Sociobot API after you add a license.</p><h2>Your control</h2><p>Export a JSON backup or delete a recording.</p>` : `
+    <p class="lede">Use Demo Loop only for material you may record.</p><h2>The tool</h2><p>Demo Loop creates short WebM recordings and PNG posters. Browser capture and codec support vary.</p><h2>Your responsibility</h2><p>You need permission to record each screen, sound, and work. Do not capture private or confidential material without permission.</p><h2>Loop Pass</h2><p>Loop Pass costs $9 once. It saves more than three recordings and exports 1920-pixel posters from large sources.</p><p>Checkout starts on Sociobot and opens a Dodo payment page. A revoked license stops paid features.</p><p>Recording, WebM, PNG, and JSON backup exports remain free.</p><h2>Local storage</h2><p>Export work you need to keep. Device cleanup, private browsing, or manual deletion can remove browser storage.</p><h2>Changes</h2><p>These terms are effective 28 August 2026. Material changes will appear on this page.</p>`;
   app.innerHTML = shell(`<main id="main" class="legal-page"><p class="eyebrow">LEGAL</p><h1>${privacy ? 'Privacy' : 'Terms'}</h1>${body}<a class="button button-ink" href="/">Return home</a></main>`);
   wirePageChrome(false);
 }
 
 function notFoundPage(): void {
   setMeta({ title: 'Page not found — Demo Loop', description: 'This Demo Loop page does not exist. Return to the recorder or open the sample demo.', canonical: '/404' });
-  app.innerHTML = shell(`<main id="main" class="not-found"><p class="eyebrow"><span>404</span> / MISSED FRAME</p><h1>Page not found</h1><p>The address does not match a Demo Loop page.</p><div><a class="button button-coral" href="/">Return home</a><a class="button button-yellow" href="/demo">Open sample demo</a></div></main>`);
+  app.innerHTML = shell(`<main id="main" class="not-found"><p class="eyebrow"><span>ERROR 404</span></p><h1>Page not found</h1><p>The address does not match a Demo Loop page.</p><div><a class="button button-coral" href="/">Return home</a><a class="button button-yellow" href="/demo">Open sample demo</a></div></main>`);
   wirePageChrome(false);
 }
 

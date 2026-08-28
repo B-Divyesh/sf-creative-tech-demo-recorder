@@ -25,7 +25,7 @@
     "claim": "Users can choose a 20, 30, or 45 second recording limit.",
     "where": "home facts, recorder, README",
     "test": "npm run test:e2e -- --grep @claim:capture-length-options",
-    "sandbox": "fresh /demo context; select each duration and assert the timeline limit"
+    "sandbox": "fresh /demo context with a virtual clock; for each duration assert recording continues just before the limit and stops at it"
   },
   {
     "id": "explicit-capture",
@@ -60,7 +60,7 @@
     "claim": "Exports the marked frame as a PNG poster.",
     "where": "home, recorder, README",
     "test": "npm run test:e2e -- --grep @claim:poster-export",
-    "sandbox": "fresh /demo context; export and decode the downloaded PNG"
+    "sandbox": "fresh /demo context; move the beat to 00:02 and 00:15, decode both PNGs, and assert frame pixels plus printed times"
   },
   {
     "id": "local-persistence",
@@ -99,7 +99,7 @@
   },
   {
     "id": "license-restore",
-    "claim": "A license can be restored on another browser through the Sociobot verification API.",
+    "claim": "A restored license stores its token and latest verification result in this browser after Sociobot verifies it.",
     "where": "Loop Pass section, privacy, README",
     "test": "npm run test:e2e -- --grep @claim:license-restore",
     "sandbox": "fresh real context; paste a token, mock the documented verdict, assert unlock and the exact production API origin"
@@ -113,7 +113,7 @@
   },
   {
     "id": "live-checkout",
-    "claim": "Loop Pass costs $9 once and checkout starts through Sociobot's hosted Dodo checkout.",
+    "claim": "Loop Pass costs $9 once, and checkout starts on Sociobot before opening a Dodo payment page.",
     "where": "Loop Pass section, terms, README",
     "test": "npm run test:e2e -- --grep @claim:live-checkout",
     "sandbox": "fresh page plus live read-only HTTP; assert the exact Sociobot link, 303 Dodo redirect, and hosted checkout $9 one-time content"

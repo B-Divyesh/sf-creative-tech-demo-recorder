@@ -1,4 +1,4 @@
-const VERSION = 'demo-loop-v4';
+const VERSION = 'demo-loop-v5';
 const SHELL = `${VERSION}-shell`;
 const RUNTIME = `${VERSION}-runtime`;
 const PRECACHE = [
@@ -18,6 +18,7 @@ const PRECACHE = [
   '/assets/sample-controller.webm',
   '/assets/sample-controller-poster.png',
   '/icons/icon.svg',
+  '/icons/apple-touch-icon.png',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/icons/icon-maskable-512.png',

@@ -1,11 +1,13 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
+import { readFile } from 'node:fs/promises';
+import sharp from 'sharp';
 
 test('home is clear, keyboard reachable, and accessible', async ({ page }) => {
   const errors: string[] = [];
   page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Record a portfolio interaction demo');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Record a browser interaction for your portfolio');
   await expect(page.getByRole('link', { name: 'Try it with sample data' })).toBeVisible();
   await page.keyboard.press('Tab');
   await expect(page.locator('.skip-link')).toBeFocused();
@@ -32,11 +34,62 @@ test('demo and legal routes have their own titles, metadata, focus, and landmark
 });
 
 test('unknown paths render the designed 404 with recovery links', async ({ page }) => {
-  await page.goto('/missing-page');
+  const response = await page.goto('/missing-page');
+  expect(response?.status()).toBe(404);
   await expect(page).toHaveTitle('Page not found — Demo Loop');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Page not found');
+  await expect(page.getByText('ERROR 404')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Return home' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Open sample demo' })).toBeVisible();
+});
+
+test('deployment config routes known pages and leaves unknown paths to the 404 override', async () => {
+  const config = JSON.parse(await readFile('public/staticwebapp.config.json', 'utf8'));
+  expect(config.navigationFallback).toBeUndefined();
+  expect(config.routes.slice(0, 5)).toEqual([
+    { route: '/', rewrite: '/index.html' },
+    { route: '/demo', rewrite: '/demo/index.html' },
+    { route: '/privacy', rewrite: '/privacy/index.html' },
+    { route: '/terms', rewrite: '/terms/index.html' },
+    { route: '/404', rewrite: '/404/index.html' },
+  ]);
+  expect(config.responseOverrides['404']).toEqual({ rewrite: '/404.html' });
+});
+
+test('metadata points to a real 180-pixel Apple touch icon', async ({ page, request }) => {
+  await page.goto('/privacy');
+  await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute('href', '/icons/apple-touch-icon.png');
+  await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute('sizes', '180x180');
+  const response = await request.get('/icons/apple-touch-icon.png');
+  expect(response.status()).toBe(200);
+  expect(await sharp(await response.body()).metadata()).toMatchObject({ width: 180, height: 180, format: 'png' });
+});
+
+test('mobile routes keep every visible control at least 44 pixels', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile');
+  for (const route of ['/', '/demo', '/privacy', '/terms', '/404']) {
+    await page.goto(route);
+    if (route === '/demo') await expect(page.getByText('SAMPLE RECORDING / ISOLATED')).toBeVisible();
+    const failures = await page.locator('a[href], button, input, textarea, select, summary').evaluateAll((elements) => elements.flatMap((element) => {
+      if (!(element instanceof HTMLElement) || !element.getClientRects().length || getComputedStyle(element).visibility === 'hidden') return [];
+      const effectiveTarget = element instanceof HTMLInputElement && ['checkbox', 'radio'].includes(element.type) ? element.closest('label') || element : element;
+      const rect = effectiveTarget.getBoundingClientRect();
+      return rect.width + 0.01 < 44 || rect.height + 0.01 < 44 ? [{ element: element.outerHTML.slice(0, 140), width: rect.width, height: rect.height }] : [];
+    }));
+    expect(failures, `${route} has undersized touch targets`).toEqual([]);
+  }
+});
+
+test('essential helper and status copy stays at 16 pixels or larger', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile');
+  await page.goto('/demo');
+  await expect(page.getByText('SAMPLE RECORDING / ISOLATED')).toBeVisible();
+  const selectors = ['.demo-banner', '.demo-intro > p:last-child', '.demo-sample-meta span', '.stage-topline', '.timeline-labels', '.status-message', '.support-note', '.take-card p:not(.take-number)', '.take-card span', '.site-footer'];
+  for (const selector of selectors) {
+    const sizes = await page.locator(selector).evaluateAll((elements) => elements.map((element) => Number.parseFloat(getComputedStyle(element).fontSize)));
+    expect(sizes.length, `${selector} should exist`).toBeGreaterThan(0);
+    expect(Math.min(...sizes), `${selector} should use readable text`).toBeGreaterThanOrEqual(16);
+  }
 });
 
 test('permission denial leaves a useful retry state', async ({ page }) => {

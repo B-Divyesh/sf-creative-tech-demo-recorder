@@ -9,7 +9,7 @@ export default defineConfig({
     trace: 'retain-on-failure',
   },
   webServer: {
-    command: 'npm run build && npm run preview -- --port 4173',
+    command: 'npm run build && npm run preview:test',
     url: 'http://127.0.0.1:4173',
     reuseExistingServer: false,
     timeout: 120_000,

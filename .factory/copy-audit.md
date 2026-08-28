@@ -7,8 +7,8 @@ Audited 2026-08-28 against the rendered home and demo routes. Counts treat a hyp
 | Location | Sentence or label | Words | Result |
 | --- | --- | ---: | --- |
 | Hero label | Portfolio tool / browser recorder | 4 | Pass |
-| H1 | Record a portfolio interaction demo | 5 | Pass |
-| Hero description | For creative-technology students who need a short video of a browser prototype working. | 12 | Pass |
+| H1 | Record a browser interaction for your portfolio | 7 | Pass |
+| Hero description | For creative-technology students who need a 20–45 second video of a prototype working. | 13 | Pass |
 | Primary action | Try it with sample data | 5 | Pass |
 | Action note | Opens a finished recording, poster, and marked beat. | 8 | Pass |
 | Fact | Media stays in this browser | 5 | Pass |
@@ -62,6 +62,7 @@ The first screen states the job, audience, action, and result in one breath. Its
 | Paid fact | Restore the license on another device | 6 | Pass |
 | Paid fact | No three-recording limit after verification | 5 | Pass |
 | License state | No license on this browser. | 5 | Pass |
+| Checkout note | Checkout starts on Sociobot and opens a Dodo payment page. | 10 | Pass |
 | Footer | Record browser interactions for a portfolio. | 6 | Pass |
 
 ## Demo route
@@ -70,9 +71,8 @@ The first screen states the job, audience, action, and result in one breath. Its
 | --- | --- | ---: | --- |
 | Banner | Demo — sample data, nothing is saved | 6 | Pass |
 | Banner detail | Changes stay in a separate demo workspace. | 7 | Pass |
-| Demo H1 | Review a sample interaction recording | 5 | Pass |
-| Demo description | The controller changes a projected shape field. | 7 | Pass |
-| Demo description | The marked beat shows the exact response. | 7 | Pass |
+| Demo H1 | Review a sample recording | 4 | Pass |
+| Demo description | See the controller response at the marked beat. | 8 | Pass |
 | Sample caption | Turning the dial stretches the projected letters. | 7 | Pass |
 | Demo status | Sample ready. | 2 | Pass |
 | Demo status | Play it, move the marked beat, or export both files. | 10 | Pass |

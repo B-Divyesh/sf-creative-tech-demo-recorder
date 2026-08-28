@@ -1,6 +1,6 @@
 # Demo Loop
 
-Record a selected browser tab or window for 20, 30, or 45 seconds. Mark one interaction beat, then export a WebM and PNG poster.
+Record a selected browser tab or window for 20, 30, or 45 seconds. Mark one interaction beat, then export that frame as a PNG poster.
 
 Demo Loop is for creative-technology students preparing portfolio work. Recordings stay in browser storage and remain after a reload.
 
@@ -35,7 +35,7 @@ The free plan saves three recordings. WebM, PNG, and JSON exports remain availab
 
 Loop Pass costs $9 once. It saves more than three recordings and exports 1920-pixel posters from sources that are large enough.
 
-Purchase and verification use only `https://api.sociobot.in`. Sociobot/Dodo is the merchant of record.
+Purchase and verification use only `https://api.sociobot.in`. Checkout starts on Sociobot and opens a Dodo payment page.
 
 Returned `?license=` tokens are stored under `sb_license:creative-tech-demo-recorder`, removed from the address, and verified. Buyers can also paste a token on another device.
 
@@ -73,7 +73,7 @@ Deploy `dist/` without modifying it. `staticwebapp.config.json` supplies routing
 
 ## Privacy and ownership
 
-Recordings, captions, posters, and beat markers stay in the selected storage namespace. The demo and real workspaces use separate IndexedDB databases.
+Recordings, captions, posters, and beat markers stay in the browser workspace you opened. The demo and real workspaces use separate IndexedDB databases.
 
 The sample export flow sends requests only to the Demo Loop origin. See the live [privacy page](https://creative-tech-demo-recorder.sociobot.in/privacy).
 

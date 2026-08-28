@@ -25,7 +25,7 @@ All body-text pairings exceed 4.5:1. Color is paired with icons, labels, line st
 
 - Display: self-hosted **Bricolage Grotesque**, 600–800, used for the masthead and short display lines.
 - Utility/body: self-hosted **IBM Plex Mono**, 400–600, used for time, instructions, form labels, and controls. The mono rhythm makes each exported artifact feel deliberately authored rather than auto-generated.
-- Scale: 14, 16, 20, 28, 44, and fluid 64px; body never below 16px.
+- Scale: 12, 16, 20, 28, 44, and fluid 64px. Informational and interactive copy never falls below 16px. Pure print labels, registration notes, and keycap hints may use 12–14px.
 - Spacing follows a 4/8px rhythm: 4, 8, 12, 16, 24, 32, 48, 64. Content measure tops out at 76 characters.
 
 ## Interaction grammar

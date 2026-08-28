@@ -11,6 +11,29 @@ async function installSyntheticCapture(page: Page, width = 640, height = 360): P
   }, { width, height });
 }
 
+async function installVirtualRecordingClock(page: Page): Promise<void> {
+  await page.addInitScript(() => {
+    let currentTime = 1_800_000_000_000;
+    let nextTimer = 1;
+    const intervals = new Map<number, TimerHandler>();
+    Date.now = () => currentTime;
+    window.setInterval = ((handler: TimerHandler) => {
+      const id = nextTimer;
+      nextTimer += 1;
+      intervals.set(id, handler);
+      return id;
+    }) as typeof window.setInterval;
+    window.clearInterval = ((id?: number) => { if (id !== undefined) intervals.delete(id); }) as typeof window.clearInterval;
+    (window as unknown as { advanceRecordingClock: (milliseconds: number) => void }).advanceRecordingClock = (milliseconds) => {
+      currentTime += milliseconds;
+      [...intervals.values()].forEach((handler) => {
+        if (typeof handler === 'function') handler();
+        else Function(handler)();
+      });
+    };
+  });
+}
+
 async function recordOnce(page: Page, name: string): Promise<void> {
   await page.getByLabel('Recording name').fill(name);
   await page.getByRole('button', { name: /Choose a tab/ }).click();
@@ -55,15 +78,30 @@ test('@claim:offline-reload reloads the sample workspace offline', async ({ page
   test.skip(testInfo.project.name === 'mobile');
   await page.goto('/demo'); await page.evaluate(() => navigator.serviceWorker.ready); await page.reload();
   await context.setOffline(true); await page.reload();
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Review a sample interaction recording');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Review a sample recording');
   await expect(page.getByText('Offline').first()).toBeVisible();
   await expect(page.getByText('SAMPLE RECORDING / ISOLATED')).toBeVisible();
 });
 
 test('@claim:capture-length-options offers and applies 20, 30, and 45 second limits', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name === 'mobile'); await page.goto('/demo');
+  test.skip(testInfo.project.name === 'mobile');
+  await installSyntheticCapture(page);
+  await installVirtualRecordingClock(page);
+  await page.goto('/demo');
   await expect(page.getByLabel('Maximum length').locator('option')).toHaveText(['20 seconds', '30 seconds', '45 seconds']);
-  for (const seconds of ['20', '30', '45']) { await page.getByLabel('Maximum length').selectOption(seconds); await expect(page.locator('#end-label')).toHaveText(`00:${seconds}`); }
+  for (const [index, seconds] of ['20', '30', '45'].entries()) {
+    await page.getByLabel('Maximum length').selectOption(seconds);
+    await expect(page.locator('#end-label')).toHaveText(`00:${seconds}`);
+    await page.getByRole('button', { name: /Choose a tab/ }).click();
+    await expect(page.getByText('RECORDING / LOCAL')).toBeVisible();
+    await page.waitForTimeout(250);
+    await page.evaluate((milliseconds) => (window as unknown as { advanceRecordingClock: (value: number) => void }).advanceRecordingClock(milliseconds), Number(seconds) * 1000 - 200);
+    await expect(page.getByText('RECORDING / LOCAL')).toBeVisible();
+    await page.evaluate(() => (window as unknown as { advanceRecordingClock: (value: number) => void }).advanceRecordingClock(200));
+    await expect(page.getByRole('button', { name: 'Export WebM' })).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('#timer')).toHaveText(`00:${seconds}`);
+    if (index < 2) await page.getByRole('button', { name: 'Record another interaction' }).click();
+  }
 });
 
 test('@claim:explicit-capture asks for screen access only after the record action', async ({ page }, testInfo) => {
@@ -99,10 +137,52 @@ test('@claim:webm-export downloads the sample recording as WebM', async ({ page 
   const path = await download.path(); expect(download.suggestedFilename()).toBe('kinetic-type-controller.webm'); expect((await (await import('node:fs/promises')).stat(path!)).size).toBeGreaterThan(1_000);
 });
 
-test('@claim:poster-export downloads a non-empty PNG poster', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name === 'mobile'); await page.goto('/demo'); await expect(page.getByText('SAMPLE RECORDING / ISOLATED')).toBeVisible();
-  const pending = page.waitForEvent('download'); await page.getByRole('button', { name: 'Export PNG poster' }).click(); const download = await pending; const path = await download.path();
-  expect(download.suggestedFilename()).toBe('kinetic-type-controller-poster.png'); expect(path).toBeTruthy(); expect((await sharp(path!).metadata()).format).toBe('png');
+test('@claim:poster-export exports the selected video frame and printed beat time', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name === 'mobile');
+  await page.addInitScript(() => {
+    const nativeFillText = CanvasRenderingContext2D.prototype.fillText;
+    (window as unknown as { posterText: string[] }).posterText = [];
+    CanvasRenderingContext2D.prototype.fillText = function fillText(text, x, y, maxWidth) {
+      (window as unknown as { posterText: string[] }).posterText.push(String(text));
+      if (maxWidth === undefined) nativeFillText.call(this, text, x, y);
+      else nativeFillText.call(this, text, x, y, maxWidth);
+    };
+  });
+  await page.goto('/demo');
+  await expect(page.getByText('SAMPLE RECORDING / ISOLATED')).toBeVisible();
+
+  const exportAt = async (milliseconds: number) => {
+    await page.locator('#beat-range').evaluate((element, value) => {
+      const range = element as HTMLInputElement;
+      range.value = String(value);
+      range.dispatchEvent(new Event('input', { bubbles: true }));
+      range.dispatchEvent(new Event('change', { bubbles: true }));
+    }, milliseconds);
+    const printedTime = `00:${String(milliseconds / 1000).padStart(2, '0')}`;
+    await expect(page.locator('#beat-time')).toHaveText(printedTime);
+    await expect(page.getByText('The marked beat and poster were updated.')).toBeVisible();
+    const pending = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Export PNG poster' }).click();
+    const download = await pending;
+    expect(download.suggestedFilename()).toBe('kinetic-type-controller-poster.png');
+    return { path: (await download.path())!, printedTime };
+  };
+
+  const before = await exportAt(2_000);
+  const after = await exportAt(15_000);
+  const beforeImage = await sharp(before.path).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const afterImage = await sharp(after.path).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  expect(beforeImage.info).toMatchObject({ width: 640, height: 475, channels: 4 });
+  expect(afterImage.info).toMatchObject({ width: 640, height: 475, channels: 4 });
+  const pixel = (image: typeof beforeImage, x: number, y: number) => [...image.data.subarray((y * image.info.width + x) * 4, (y * image.info.width + x) * 4 + 3)];
+  const distance = (left: number[], right: number[]) => left.reduce((total, value, index) => total + Math.abs(value - right[index]!), 0);
+  expect(distance(pixel(beforeImage, 70, 240), [255, 249, 235])).toBeLessThan(70);
+  expect(distance(pixel(afterImage, 70, 240), [0, 106, 113])).toBeLessThan(90);
+  expect(distance(pixel(beforeImage, 70, 240), pixel(afterImage, 70, 240))).toBeGreaterThan(250);
+  expect(await page.evaluate(() => (window as unknown as { posterText: string[] }).posterText)).toEqual(expect.arrayContaining([
+    `INTERACTION BEAT · ${before.printedTime}`,
+    `INTERACTION BEAT · ${after.printedTime}`,
+  ]));
 });
 
 test('@claim:local-persistence keeps a real recording after reload', async ({ page }, testInfo) => {
@@ -144,6 +224,8 @@ test('@claim:license-restore verifies a pasted license through the production AP
   await page.route('https://api.sociobot.in/api/v1/products/creative-tech-demo-recorder/verify?license=pasted-token', (route) => { verificationUrl = route.request().url(); return route.fulfill({ json: { valid: true, reason: 'ok', expires_at: null } }); });
   await page.goto('/'); await page.getByText('Have a license?').click(); await page.getByLabel('Paste license token').fill('pasted-token'); await page.getByRole('button', { name: 'Verify license' }).click();
   await expect(page.getByText('Loop Pass active on this browser.')).toBeVisible(); expect(verificationUrl).toMatch(/^https:\/\/api\.sociobot\.in\/api\/v1\//);
+  expect(await page.evaluate(() => localStorage.getItem('sb_license:creative-tech-demo-recorder'))).toBe('pasted-token');
+  expect(JSON.parse((await page.evaluate(() => localStorage.getItem('sb_license:creative-tech-demo-recorder:verdict'))) || '{}')).toMatchObject({ valid: true, reason: 'ok' });
 });
 
 test('@claim:license-revocation keeps paid features locked for an inactive license', async ({ page }, testInfo) => {
