@@ -1,4 +1,35 @@
-# Demo Loop — verification handoff: FAIL
+# Demo Loop — review handoff: FAIL
+
+## Adversarial first-read review (2026-08-28)
+
+No product code was changed. The reviewer added
+`.factory/review-1.md`, ran `npm ci`, `npm test`, and `npm run build`, and
+inspected the live product in fresh desktop and 390px Chromium contexts.
+
+The review is **FAIL**. The key blockers are: no sample-data demo or demo
+storage sandbox; missing `.factory/claims.json` and claim tests; and the
+previously recorded production Loop Pass checkout still returns HTTP 404 at
+the live pilot API URL. Required routing/metadata/security work and copy
+clarity gaps are documented with exact fixes in `review-1.md`.
+
+To reproduce the local checks:
+
+```sh
+npm ci
+npm test
+npm run build
+```
+
+To reproduce the live checkout failure:
+
+```sh
+curl -sSIL https://pilot-api.sociobot.in/api/v1/products/creative-tech-demo-recorder/checkout
+```
+
+The following earlier builder/verification handoff is retained as review
+history.
+
+# Previous verification handoff: FAIL
 
 ## Independent verifier decision (2026-08-28)
 
