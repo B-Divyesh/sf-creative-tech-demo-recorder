@@ -1,0 +1,53 @@
+# Demo Loop visual thesis
+
+## Direction
+
+Demo Loop is a **dithered/halftone print system**: a compact field notebook for turning a fragile live interaction into evidence. Registration marks, ink overlaps, timecodes, torn-edge rules, and dot screens borrow from student print rooms rather than generic video-editor chrome. Decoration always explains sequence: coral marks the cause, cyan marks the effect, and their overprint becomes the captured proof.
+
+This is an intentionally light, ink-on-paper interface. A dark mode would turn the print metaphor into a generic editing suite and reduce the meaning of the physical-paper palette, so the product explicitly paints its single-mode background.
+
+## Palette
+
+| Token | Value | Use |
+| --- | --- | --- |
+| Paper | `#F3EBD8` | app background |
+| Stock | `#FFF9EB` | work surfaces |
+| Ink | `#1D1A17` | primary text and outlines |
+| Muted ink | `#625B50` | secondary text |
+| Coral | `#E94E3D` | input/cause, record, warning; always paired with dark ink text |
+| Cyan | `#006A71` | effect, links, success |
+| Yellow | `#F2C84B` | selection and focus field |
+| Danger | `#B72B2B` | errors and destructive actions |
+
+All body-text pairings exceed 4.5:1. Color is paired with icons, labels, line styles, or position; it never carries state alone.
+
+## Type and spacing
+
+- Display: self-hosted **Bricolage Grotesque**, 600–800, used for the masthead and short display lines.
+- Utility/body: self-hosted **IBM Plex Mono**, 400–600, used for time, instructions, form labels, and controls. The mono rhythm makes each exported artifact feel deliberately authored rather than auto-generated.
+- Scale: 14, 16, 20, 28, 44, and fluid 64px; body never below 16px.
+- Spacing follows a 4/8px rhythm: 4, 8, 12, 16, 24, 32, 48, 64. Content measure tops out at 76 characters.
+
+## Interaction grammar
+
+- The primary journey is numbered **01 capture → 02 mark the beat → 03 export** and the active station has a yellow underprint.
+- Controls use thick ink outlines and a 3px offset shadow; pressed controls meet their shadow, like a letterpress block contacting paper.
+- The live interaction beat appears as a coral notch on a cyan timeline. Caption text is burned into poster exports only; the clean WebM stays reusable.
+- Tool feedback is immediate and spoken through polite live regions. Keyboard shortcuts are shown beside the actions they trigger.
+- Phone layout drops the decorative side annotations and stacks the three stations, keeping every target at least 44px.
+
+## Motion policy
+
+UI state changes use 180–240ms opacity and translate transitions. The record lamp breathes slowly only while capture is active. Nothing else loops. Under `prefers-reduced-motion`, transforms and breathing stop; state changes are instant and the lamp remains solid.
+
+## Asset plan and provenance
+
+- Hero artwork: an original, generated two-ink editorial still of a hand triggering an experimental controller and a screen reacting, separated by a marked interaction beat. It explains cause/effect and uses no fake product UI.
+- Product mark, registration crosses, waveform, icons, and poster overlays are original SVG/CSS/canvas assets authored in-repo.
+- PWA icons are authored in SVG and rasterized locally.
+
+### Generation prompt sheet
+
+Use case: `illustration-story`. Asset type: landing-page editorial hero. Subject: anonymous hands pressing one oversized experimental arcade button; a nearby small abstract screen blooms with geometric particles at the instant of input. World: student creative-technology workbench with patch cables and cardboard prototype edges. Medium: two-color risograph editorial illustration, visible coarse halftone dots, imperfect ink registration, tactile recycled paper grain. Composition: wide landscape, clear diagonal cause-and-effect from hand at lower left to reactive screen at upper right, generous quiet paper around the action. Light/lens: graphic flat studio light, close 35mm editorial framing. Palette words: warm cream paper, carbon black, vermilion coral, deep cyan, small sunflower-yellow registration marks. Negative list: no text, letters, watermark, logos, brands, photoreal faces, extra fingers, illegible interface, gradients, glossy 3D, generic SaaS imagery.
+
+Generated with the factory image model (`factory-image`) via `/opt/fleet/lib/gen-image.sh` on 2026-08-28. Original for Demo Loop. Source prompt is retained in `assets/src/hero-prompt.json`; selected PNG source and optimized WebP/AVIF derivatives are retained in the repository. The product footer discloses AI-assisted illustration.

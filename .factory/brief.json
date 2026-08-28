@@ -1,0 +1,12 @@
+{
+  "slug": "creative-tech-demo-recorder",
+  "title": "Demo Loop",
+  "territory": "games-creative",
+  "user": "Creative-technology students needing a credible 20–45 second proof-of-interaction for a portfolio, even when their prototype is fragile.",
+  "smallest_useful_product": "Browser recorder that captures a selected tab plus optional mic, lets the maker mark one interaction beat and one caption, and exports a short WebM and poster image.",
+  "success_measure": "60% of recordings are exported without opening another editor.",
+  "artifact_class": "pwa-offline",
+  "monetization": "one-time",
+  "constraints": "Use screen-capture permission only on explicit action; keep media local; browser codec fallbacks; never claim archival quality.",
+  "why_distinct": "It is tuned to showing an interaction's cause and effect, not a generic screencast service."
+}
