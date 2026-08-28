@@ -68,7 +68,7 @@ The first screen states the job, audience, action, and result in one breath. Its
 
 | Location | Sentence or label | Words | Result |
 | --- | --- | ---: | --- |
-| Banner | Demo — sample data, nothing is saved | 7 | Pass |
+| Banner | Demo — sample data, nothing is saved | 6 | Pass |
 | Banner detail | Changes stay in a separate demo workspace. | 7 | Pass |
 | Demo H1 | Review a sample interaction recording | 5 | Pass |
 | Demo description | The controller changes a projected shape field. | 7 | Pass |
