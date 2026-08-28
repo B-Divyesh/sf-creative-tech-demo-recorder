@@ -49,18 +49,51 @@ test('permission denial leaves a useful retry state', async ({ page }) => {
   await expect(page.getByRole('button', { name: /Choose a tab/ })).toBeEnabled();
 });
 
-test('mobile layout has no horizontal overflow and keeps primary targets large', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'mobile');
+test('demo result and export action are visible in the first viewport', async ({ page }) => {
   await page.goto('/demo');
+  await expect(page.getByText('SAMPLE RECORDING / ISOLATED')).toBeVisible();
+  await expect(page.getByText('Turning the dial stretches the projected letters.').first()).toBeVisible();
+  await expect(page.locator('#beat-label')).toHaveText('BEAT — 00:09');
   await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
   const size = await page.getByRole('button', { name: /Choose a tab/ }).boundingBox();
   expect(size?.height).toBeGreaterThanOrEqual(44);
+  const video = await page.locator('#preview').boundingBox();
+  const sampleAction = await page.getByRole('button', { name: 'Export WebM' }).boundingBox();
+  const viewportHeight = page.viewportSize()!.height;
+  expect(video).not.toBeNull();
+  expect(sampleAction).not.toBeNull();
+  expect(video!.y).toBeGreaterThanOrEqual(0);
+  expect(video!.y + video!.height).toBeLessThanOrEqual(viewportHeight);
+  expect(sampleAction!.y + sampleAction!.height).toBeLessThanOrEqual(viewportHeight);
+  const another = page.getByRole('button', { name: 'Record another interaction' });
+  await expect(another).toBeVisible();
+  expect(await another.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return style.color === style.backgroundColor;
+  })).toBe(false);
   await expect(page.getByRole('navigation', { name: 'Primary navigation' })).toBeVisible();
+});
+
+test('query-string demo entry opens the same isolated sample controls', async ({ page }) => {
+  await page.goto('/?demo=1');
+  await expect(page).toHaveTitle('Demo — Demo Loop');
+  await expect(page.getByText('Demo — sample data, nothing is saved')).toBeVisible();
+  await expect(page.getByText('SAMPLE RECORDING / ISOLATED')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Reset demo' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Start for real' })).toBeVisible();
+});
+
+test('factory footer uses the reachable canonical destination', async ({ page, request }) => {
+  await page.goto('/');
+  const link = page.getByRole('link', { name: 'Built by Param Factory' });
+  await expect(link).toHaveAttribute('href', 'https://sociobot.in/');
+  expect((await request.get('https://sociobot.in/')).status()).toBe(200);
 });
 
 for (const route of ['/', '/demo', '/privacy', '/terms', '/404']) {
   test(`route ${route} has no serious or critical axe findings`, async ({ page }) => {
     await page.goto(route);
+    if (route === '/demo') await expect(page.getByText('SAMPLE RECORDING / ISOLATED')).toBeVisible();
     const results = await new AxeBuilder({ page }).analyze();
     expect(results.violations.filter((violation) => ['serious', 'critical'].includes(violation.impact || ''))).toEqual([]);
   });

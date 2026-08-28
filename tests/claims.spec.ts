@@ -38,7 +38,7 @@ test('@claim:sample-demo-isolated opens a finished sample and never changes the 
   await page.getByRole('button', { name: 'Reset demo' }).click();
   await expect(page.getByRole('heading', { name: 'Kinetic type controller' })).toBeVisible();
   await page.getByRole('link', { name: 'Start for real' }).click();
-  await expect(page.getByText('Private real recording')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Private real recording' })).toBeVisible();
   expect(await page.evaluate(() => indexedDB.databases().then((items) => items.map((item) => item.name)))).not.toContain('demo:demo-loop-local');
 });
 
@@ -106,7 +106,7 @@ test('@claim:poster-export downloads a non-empty PNG poster', async ({ page }, t
 });
 
 test('@claim:local-persistence keeps a real recording after reload', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name === 'mobile'); await installSyntheticCapture(page); await page.goto('/'); await recordOnce(page, 'Reload proof'); await page.reload(); await expect(page.getByText('Reload proof')).toBeVisible();
+  test.skip(testInfo.project.name === 'mobile'); await installSyntheticCapture(page); await page.goto('/'); await recordOnce(page, 'Reload proof'); await page.reload(); await expect(page.getByRole('heading', { name: 'Reload proof' })).toBeVisible();
 });
 
 test('@claim:backup-roundtrip exports and imports the complete local recording list', async ({ page }, testInfo) => {
@@ -117,10 +117,11 @@ test('@claim:backup-roundtrip exports and imports the complete local recording l
   await page.locator('#restore-input').setInputFiles(path!); await expect(page.getByRole('heading', { name: 'Kinetic type controller' })).toBeVisible();
 });
 
-test('@claim:free-save-limit keeps three recordings while all core exports remain available', async ({ page }, testInfo) => {
+test('@claim:free-save-limit keeps three recordings while WebM, PNG, and JSON exports remain available', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name === 'mobile'); await installSyntheticCapture(page); await page.goto('/');
   await page.evaluate(async () => { const db = await new Promise<IDBDatabase>((resolve) => { const request = indexedDB.open('demo-loop-local', 1); request.onsuccess = () => resolve(request.result); }); const tx = db.transaction('takes', 'readwrite'); for (let index = 1; index <= 3; index += 1) tx.objectStore('takes').put({ id: `free-${index}`, title: `Saved ${index}`, caption: '', beatMs: 1, durationMs: 2, createdAt: new Date(Date.now() + index).toISOString(), mimeType: 'video/webm', video: new Blob(['saved']) }); await new Promise((resolve) => { tx.oncomplete = resolve; }); db.close(); });
   await page.reload(); await recordOnce(page, 'Fourth unsaved'); await expect(page.locator('.take-card')).toHaveCount(3); await expect(page.getByRole('button', { name: 'Export WebM' })).toBeVisible(); await expect(page.getByRole('button', { name: 'Export PNG poster' })).toBeVisible();
+  const pending = page.waitForEvent('download'); await page.getByRole('button', { name: 'Export JSON backup' }).click(); const backup = JSON.parse(await (await pending).createReadStream().then(async (stream) => { let content = ''; for await (const chunk of stream) content += chunk.toString(); return content; })); expect(backup.takes).toHaveLength(3);
 });
 
 test('@claim:paid-unlimited verifies a returned license and saves a fourth recording', async ({ page }, testInfo) => {
@@ -154,5 +155,5 @@ test('@claim:license-revocation keeps paid features locked for an inactive licen
 test('@claim:live-checkout redirects from Sociobot to the hosted $9 Dodo checkout', async ({ page, request }, testInfo) => {
   test.skip(testInfo.project.name === 'mobile'); await page.goto('/'); const href = await page.getByRole('link', { name: 'Buy Loop Pass' }).getAttribute('href');
   expect(href).toBe('https://api.sociobot.in/api/v1/products/creative-tech-demo-recorder/checkout'); const redirect = await request.get(href!, { maxRedirects: 0 }); expect(redirect.status()).toBe(303); expect(redirect.headers().location).toMatch(/^https:\/\/checkout\.dodopayments\.com\/session\//);
-  const checkout = await request.get(redirect.headers().location); expect(await checkout.text()).toContain('$9');
+  const checkout = await request.get(redirect.headers().location); const content = await checkout.text(); expect(content).toContain('$9'); expect(content).toContain('One-time unlock');
 });

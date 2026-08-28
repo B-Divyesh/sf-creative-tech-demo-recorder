@@ -78,10 +78,10 @@
   },
   {
     "id": "free-save-limit",
-    "claim": "The free plan saves three recordings while WebM and PNG exports remain available.",
+    "claim": "The free plan saves three recordings while WebM, PNG, and JSON exports remain available.",
     "where": "Loop Pass section, terms, README",
     "test": "npm run test:e2e -- --grep @claim:free-save-limit",
-    "sandbox": "fresh real context with three seeded recordings; make a fourth and assert three persisted plus both export controls"
+    "sandbox": "fresh real context with three seeded recordings; make a fourth and assert three persisted plus working WebM, PNG, and JSON exports"
   },
   {
     "id": "paid-unlimited",
@@ -92,7 +92,7 @@
   },
   {
     "id": "paid-poster",
-    "claim": "A verified Loop Pass exports full-width 1920-pixel posters when the source is large enough.",
+    "claim": "A verified Loop Pass exports 1920-pixel posters when the source is large enough.",
     "where": "Loop Pass section, README",
     "test": "npm run test:e2e -- --grep @claim:paid-poster",
     "sandbox": "fresh real context with cached valid verdict and 1920px synthetic media; export and decode poster width"
@@ -116,6 +116,6 @@
     "claim": "Loop Pass costs $9 once and checkout starts through Sociobot's hosted Dodo checkout.",
     "where": "Loop Pass section, terms, README",
     "test": "npm run test:e2e -- --grep @claim:live-checkout",
-    "sandbox": "fresh page plus live read-only HTTP; assert the exact Sociobot link, 303 Dodo redirect, and hosted checkout $9 content"
+    "sandbox": "fresh page plus live read-only HTTP; assert the exact Sociobot link, 303 Dodo redirect, and hosted checkout $9 one-time content"
   }
 ]

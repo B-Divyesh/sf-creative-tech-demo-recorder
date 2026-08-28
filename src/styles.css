@@ -96,15 +96,28 @@ h3 { font-size: 24px; letter-spacing: -.025em; }
 .button-cyan { color: #fff; background: var(--cyan); }
 .button-yellow { color: var(--ink); background: var(--yellow); }
 .button-ink { color: var(--stock); background: var(--ink); }
-.button-plain { background: var(--stock); }
+.button-plain { color: var(--ink); background: var(--stock); }
 .button-wide { width: 100%; }
 .record-dot { width: 12px; height: 12px; border: 2px solid currentColor; border-radius: 50%; background: var(--stock); }
 
 .recorder-section { padding: clamp(72px, 9vw, 128px) clamp(20px, 5vw, 80px); background: var(--stock); border-bottom: var(--line); }
-.demo-intro { padding: clamp(44px, 7vw, 88px) clamp(20px, 5vw, 80px) 28px; background: var(--paper); }
-.demo-intro h1 { max-width: 980px; margin-bottom: 20px; font-size: clamp(44px, 6vw, 76px); }
-.demo-intro > p:last-child { max-width: 68ch; font-size: 18px; }
-.demo-recorder { padding-top: 28px; }
+.demo-intro { padding: 24px clamp(20px, 5vw, 80px) 18px; background: var(--paper); }
+.demo-intro .eyebrow { margin-bottom: 10px; }
+.demo-intro h1 { max-width: 1100px; margin-bottom: 10px; font-size: clamp(36px, 3.5vw, 48px); }
+.demo-intro > p:last-child { max-width: 68ch; margin-bottom: 0; font-size: 16px; }
+.demo-recorder { padding-top: 14px; }
+.demo-recorder .recorder-grid { grid-template-columns: minmax(480px, 1.34fr) minmax(290px, .66fr); }
+.demo-recorder .stage-panel { grid-column: 1; grid-row: 1; padding: 18px; }
+.demo-recorder .setup-panel { grid-column: 2; grid-row: 1; border-right: 0; border-left: var(--line); }
+.demo-recorder .review-controls { display: flex; flex-direction: column; }
+.demo-recorder .review-controls .export-actions { order: -1; }
+.demo-recorder .video-stage { height: min(32vh, 275px); aspect-ratio: auto; }
+
+@media (min-width: 781px) {
+  .demo-recorder .stage-panel { position: relative; }
+  .demo-recorder .demo-sample-meta { min-height: 52px; padding-right: 160px; align-items: flex-start; flex-direction: column; gap: 2px; }
+  .demo-recorder #export-video { position: absolute; z-index: 2; top: 18px; right: 18px; }
+}
 .section-heading { max-width: 780px; margin-bottom: 48px; }
 .section-heading > p:last-child { max-width: 660px; color: var(--muted); }
 .station-tabs { display: grid; grid-template-columns: repeat(3, 1fr); max-width: 860px; margin: 0 0 -2px auto; padding: 0; list-style: none; }
@@ -129,6 +142,9 @@ select { appearance: none; background-image: linear-gradient(45deg, transparent 
 .support-note svg { flex: 0 0 20px; width: 20px; fill: none; stroke: currentColor; stroke-width: 2; }
 
 .stage-panel { min-width: 0; padding: clamp(18px, 3vw, 38px); background: var(--ink); color: var(--stock); }
+.demo-sample-meta { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 10px; }
+.demo-sample-meta strong { color: var(--yellow); font-family: 'Bricolage Grotesque', sans-serif; font-size: 20px; }
+.demo-sample-meta span { max-width: 48ch; color: #d5cdbf; font-size: 12px; text-align: right; }
 .stage-topline { min-height: 36px; display: flex; justify-content: space-between; font-size: 12px; letter-spacing: .08em; }
 .stage-topline output { color: var(--yellow); font-size: 18px; font-variant-numeric: tabular-nums; }
 .video-stage { position: relative; aspect-ratio: 16 / 9; border: 2px solid var(--stock); background-color: #292623; background-image: radial-gradient(#4e4943 1px,transparent 1px); background-size: 5px 5px; overflow: hidden; }
@@ -250,6 +266,10 @@ kbd { padding: 2px 6px; border: 1px solid currentColor; background: rgba(255,255
   .station-tabs b { display: block; }
   .recorder-grid { grid-template-columns: 1fr; box-shadow: 5px 5px 0 var(--ink); }
   .setup-panel { border-right: 0; border-bottom: var(--line); }
+  .demo-recorder { padding-top: 10px; padding-bottom: 56px; }
+  .demo-recorder .recorder-grid { grid-template-columns: 1fr; }
+  .demo-recorder .stage-panel { grid-column: 1; grid-row: 1; }
+  .demo-recorder .setup-panel { grid-column: 1; grid-row: 2; border-left: 0; border-top: var(--line); border-bottom: 0; }
   .stage-panel { padding: 16px; }
   .record-actions .button, .export-actions .button { flex: 1 1 170px; }
   .method-section ol { grid-template-columns: 1fr; }
@@ -262,9 +282,24 @@ kbd { padding: 2px 6px; border: 1px solid currentColor; background: rgba(255,255
   .license-box { grid-column: auto; }
   .site-footer { align-items: flex-start; flex-direction: column; }
   .art-credit { text-align: left; }
-  .demo-banner { position: relative; align-items: flex-start; flex-direction: column; gap: 6px; padding-block: 12px; }
+  .demo-banner { position: sticky; align-items: flex-start; flex-direction: column; gap: 6px; padding-block: 8px; }
+  .demo-banner > span { display: none; }
   .demo-banner div { width: 100%; }
   .demo-banner button, .demo-banner a { flex: 1; justify-content: center; }
+  .demo-intro { padding: 14px 18px 10px; }
+  .demo-intro .eyebrow { margin-bottom: 6px; }
+  .demo-intro h1 { margin-bottom: 6px; font-size: 30px; line-height: 1; letter-spacing: -.045em; }
+  .demo-intro > p:last-child { font-size: 13px; line-height: 1.35; }
+  .demo-sample-meta { align-items: flex-start; flex-direction: column; gap: 2px; margin-bottom: 6px; }
+  .demo-sample-meta strong { font-size: 17px; }
+  .demo-sample-meta span { text-align: left; }
+  .demo-recorder .stage-topline { min-height: 28px; }
+  .demo-recorder .video-stage { height: auto; aspect-ratio: 16 / 9; }
+  .demo-recorder .timeline { padding-top: 12px; }
+  .demo-recorder .review-controls { margin-top: 8px; padding-top: 8px; }
+  .demo-recorder .review-controls input[type='range'] { min-height: 32px; }
+  .demo-recorder .export-actions { margin-top: 8px; }
+  .demo-recorder .status-message { margin-top: 10px; }
 }
 
 @media (max-width: 420px) {
@@ -277,6 +312,7 @@ kbd { padding: 2px 6px; border: 1px solid currentColor; background: rgba(255,255
   .station-tabs li { min-height: 64px; }
   .setup-panel { padding: 20px 16px; }
   .video-stage { aspect-ratio: 4 / 3; }
+  .demo-recorder .video-stage { aspect-ratio: 16 / 9; }
   .timeline-labels span:nth-child(2) { max-width: 110px; text-align: center; }
   .backup-actions { width: 100%; justify-content: space-between; }
   .site-footer nav { flex-wrap: wrap; row-gap: 12px; }

@@ -6,7 +6,7 @@ import type { CaptureStatus, DemoTake } from './types';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 const SITE = 'https://creative-tech-demo-recorder.sociobot.in';
-const BUILD = '1.1.0';
+const BUILD = '1.2.0';
 const escapeHtml = (value: string) => value.replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character] || character);
 
 type PageMeta = { title: string; description: string; canonical: string };
@@ -39,7 +39,7 @@ function shell(content: string, demo = false): string {
     ${content}
     <footer class="site-footer">
       <p><strong>Demo Loop</strong> · Record browser interactions for a portfolio.</p>
-      <nav aria-label="Legal"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="https://www.sociobot.in" rel="external">Built by Param Factory</a></nav>
+      <nav aria-label="Legal"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="https://sociobot.in/" rel="external">Built by Param Factory</a></nav>
       <p class="art-credit">Build ${BUILD} · Original AI-assisted illustration.</p>
     </footer>
     <div class="toast" id="update-toast" role="status" hidden>An update is ready. <button type="button" id="reload-app">Update app</button></div>`;
@@ -67,15 +67,15 @@ const hero = `
 function recorderMarkup(demo: boolean): string {
   return `
     ${demo ? `<section class="demo-intro" aria-labelledby="demo-title"><p class="eyebrow"><span>SAMPLE WORKSPACE</span> / ISOLATED</p><h1 id="demo-title">Review a sample interaction recording</h1><p>The controller changes a projected shape field. The marked beat shows the exact response.</p></section>` : ''}
-    <section class="recorder-section${demo ? ' demo-recorder' : ''}" id="recorder" aria-labelledby="recorder-title">
-      <div class="section-heading">
+    <section class="recorder-section${demo ? ' demo-recorder' : ''}" id="recorder" ${demo ? 'aria-label="Sample recording and recording setup"' : 'aria-labelledby="recorder-title"'}>
+      ${demo ? '' : `<div class="section-heading">
         <p class="eyebrow">RECORD YOUR INTERACTION</p>
         <h2 id="recorder-title">Record, mark the beat, and export</h2>
         <p>Select a tab or window. Mark the response while recording, then export the video and poster.</p>
       </div>
       <ol class="station-tabs" aria-label="Recording steps">
         <li class="active"><b>01</b> Record</li><li><b>02</b> Mark the beat</li><li><b>03</b> Export</li>
-      </ol>
+      </ol>`}
       <div class="recorder-grid">
         <form class="setup-panel" id="capture-form">
           <div class="field"><label for="take-title">Recording name</label><input id="take-title" maxlength="48" value="${demo ? 'Kinetic type controller' : 'Portfolio interaction'}" autocomplete="off" /></div>
@@ -86,6 +86,7 @@ function recorderMarkup(demo: boolean): string {
           <p class="support-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V7a5 5 0 0 1 10 0v3M5 10h14v11H5z"/></svg> Screen permission starts only after this button. Media does not leave the browser.</p>
         </form>
         <div class="stage-panel" id="stage-panel">
+          ${demo ? `<div class="demo-sample-meta"><strong>Kinetic type controller</strong><span>Turning the dial stretches the projected letters.</span></div>` : ''}
           <div class="stage-topline"><span id="stage-label">READY / NO SIGNAL</span><output id="timer">00:00</output></div>
           <div class="video-stage">
             <video id="preview" playsinline muted controls hidden></video>
@@ -94,7 +95,7 @@ function recorderMarkup(demo: boolean): string {
           </div>
           <div class="timeline" aria-label="Interaction timeline"><div class="timeline-track"><span id="timeline-progress"></span><i id="beat-notch" hidden></i></div><div class="timeline-labels"><span>START</span><span id="beat-label">BEAT — NOT MARKED</span><span id="end-label">00:30</span></div></div>
           <div class="record-actions" id="record-actions" hidden><button class="button button-yellow" type="button" id="mark-beat">Mark interaction <kbd>M</kbd></button><button class="button button-ink" type="button" id="stop-recording">Finish recording <kbd>S</kbd></button></div>
-          <div class="review-controls" id="review-controls" hidden><label for="beat-range">Poster frame / interaction beat <output id="beat-time">00:00</output></label><input type="range" id="beat-range" min="0" max="1000" value="500" /><div class="export-actions"><button class="button button-cyan" type="button" id="export-video">Export WebM</button><button class="button button-yellow" type="button" id="export-poster">Export PNG poster</button><button class="button button-plain" type="button" id="new-take">New recording</button></div></div>
+          <div class="review-controls" id="review-controls" hidden><label for="beat-range">Poster frame / interaction beat <output id="beat-time">00:00</output></label><input type="range" id="beat-range" min="0" max="1000" value="500" /><div class="export-actions"><button class="button button-cyan" type="button" id="export-video">Export WebM</button><button class="button button-yellow" type="button" id="export-poster">Export PNG poster</button><button class="button button-plain" type="button" id="new-take">Record another interaction</button></div></div>
           <p class="status-message" id="status-message" role="status" aria-live="polite">Ready to record.</p>
         </div>
       </div>
@@ -104,10 +105,10 @@ function recorderMarkup(demo: boolean): string {
 }
 
 const boundaries = `
-  <section class="boundaries-section" aria-labelledby="boundaries-title"><p class="eyebrow">PRIVACY AND LIMITS</p><h2 id="boundaries-title">What Demo Loop does not do</h2><ul><li>It does not upload recordings.</li><li>It does not add analytics or advertising.</li><li>It does not replace an archival video editor.</li></ul><a href="/privacy">Read the privacy details</a></section>`;
+  <section class="boundaries-section" aria-labelledby="boundaries-title"><p class="eyebrow">PRIVACY AND LIMITS</p><h2 id="boundaries-title">What Demo Loop does not do</h2><ul><li>It does not upload recordings.</li><li>It does not replace an archival video editor.</li></ul><a href="/privacy">Read the privacy details</a></section>`;
 
 const unlock = `
-  <section class="unlock-section" id="unlock" aria-labelledby="unlock-title"><div class="unlock-mark" aria-hidden="true"><span>∞</span></div><div class="unlock-copy"><p class="eyebrow">LOOP PASS / ONE-TIME</p><h2 id="unlock-title">Loop Pass: unlimited saved recordings</h2><p>The free plan saves three recordings. It exports every video, poster, and backup.</p><p>Loop Pass costs $9 once. It saves unlimited recordings and exports full-width posters.</p><ul><li>One payment with no recurring fee</li><li>Restore the license on another device</li><li>Core exports remain free</li></ul></div><div class="license-box"><div class="price"><b>$9</b><span>USD<br>ONE TIME</span></div><a class="button button-coral button-wide" href="${checkoutUrl}" id="buy-link">Buy Loop Pass</a><p id="license-state" role="status">No license on this browser.</p><details><summary>Have a license?</summary><form id="license-form"><label for="license-token">Paste license token</label><input id="license-token" required autocomplete="off" /><button class="button button-ink" type="submit" aria-label="Verify license">Verify license</button></form></details><small>Sociobot/Dodo is the merchant of record. <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></small></div></section>`;
+  <section class="unlock-section" id="unlock" aria-labelledby="unlock-title"><div class="unlock-mark" aria-hidden="true"><span>4+</span></div><div class="unlock-copy"><p class="eyebrow">LOOP PASS / ONE-TIME</p><h2 id="unlock-title">Loop Pass removes the three-recording limit</h2><p>The free plan saves three recordings. WebM, PNG, and JSON exports remain available.</p><p>Loop Pass costs $9 once. It saves more than three recordings and exports 1920-pixel posters from large sources.</p><ul><li>$9 one-time checkout through Sociobot</li><li>Restore the license on another device</li><li>No three-recording limit after verification</li></ul></div><div class="license-box"><div class="price"><b>$9</b><span>USD<br>ONE TIME</span></div><a class="button button-coral button-wide" href="${checkoutUrl}" id="buy-link">Buy Loop Pass</a><p id="license-state" role="status">No license on this browser.</p><details><summary>Have a license?</summary><form id="license-form"><label for="license-token">Paste license token</label><input id="license-token" required autocomplete="off" /><button class="button button-ink" type="submit" aria-label="Verify license">Verify license</button></form></details><small>Sociobot/Dodo is the merchant of record. <a href="/terms">Terms</a> · <a href="/privacy">Privacy</a></small></div></section>`;
 
 function homePage(demo: boolean): void {
   setMeta(demo ? { title: 'Demo — Demo Loop', description: 'Try a finished browser interaction recording in an isolated sample workspace.', canonical: '/demo' } : { title: 'Demo Loop — Record browser interaction demos', description: 'Record a browser prototype, mark its interaction beat, and export a WebM and poster for your portfolio.', canonical: '/' });
@@ -120,8 +121,8 @@ function legalPage(kind: 'privacy' | 'terms'): void {
   const privacy = kind === 'privacy';
   setMeta(privacy ? { title: 'Privacy — Demo Loop', description: 'How Demo Loop stores recordings and license data.', canonical: '/privacy' } : { title: 'Terms — Demo Loop', description: 'Terms for recording, local storage, exports, and Loop Pass.', canonical: '/terms' });
   const body = privacy ? `
-    <p class="lede">Your recordings remain under your control.</p><h2>What stays local</h2><p>Recordings, captions, beat markers, and posters use browser storage. Demo Loop does not upload them.</p><h2>Screen and microphone access</h2><p>The browser asks after you choose to record. Microphone access is optional.</p><h2>Purchases</h2><p>Sociobot and Dodo handle checkout. Demo Loop stores your license token and cached verdict locally. Checkout opens outside this app.</p><h2>Network requests</h2><p>The app contacts the Sociobot API only for checkout and license checks. It has no analytics, ads, or third-party fonts.</p><h2>Your control</h2><p>Export a JSON backup or delete a recording. Clearing this site’s data removes recordings and the saved license.</p>` : `
-    <p class="lede">Use Demo Loop only for material you may record.</p><h2>The tool</h2><p>Demo Loop creates short WebM recordings and PNG posters. Browser capture and codec support vary.</p><h2>Your responsibility</h2><p>You need permission to record each screen, sound, and work. Do not capture private or confidential material without permission.</p><h2>Loop Pass</h2><p>Loop Pass costs $9 once. It adds unlimited saved recordings and full-width posters after license verification.</p><p>Sociobot/Dodo is the merchant of record. It handles payment support and refunds. A refunded or revoked license stops paid features.</p><p>Recording, core exports, backups, and accessibility remain free.</p><h2>Local storage</h2><p>Export work you need to keep. Device cleanup, private browsing, or manual deletion can remove browser storage.</p><h2>Changes</h2><p>These terms are effective 28 August 2026. Material changes will appear on this page.</p>`;
+    <p class="lede">Your recordings remain under your control.</p><h2>What stays local</h2><p>Recordings, captions, beat markers, and posters use browser storage. Demo Loop does not upload them.</p><h2>Screen and microphone access</h2><p>The browser asks after you choose to record. Microphone access is optional.</p><h2>Purchases</h2><p>Sociobot and Dodo handle checkout. Demo Loop stores your license token and cached verdict locally.</p><h2>Network requests</h2><p>Checkout opens on Sociobot. License verification uses the Sociobot API after you add a license.</p><h2>Your control</h2><p>Export a JSON backup or delete a recording.</p>` : `
+    <p class="lede">Use Demo Loop only for material you may record.</p><h2>The tool</h2><p>Demo Loop creates short WebM recordings and PNG posters. Browser capture and codec support vary.</p><h2>Your responsibility</h2><p>You need permission to record each screen, sound, and work. Do not capture private or confidential material without permission.</p><h2>Loop Pass</h2><p>Loop Pass costs $9 once. It saves more than three recordings and exports 1920-pixel posters from large sources.</p><p>Sociobot/Dodo is the merchant of record. It handles refunds. A revoked license stops paid features.</p><p>Recording, WebM, PNG, and JSON backup exports remain free.</p><h2>Local storage</h2><p>Export work you need to keep. Device cleanup, private browsing, or manual deletion can remove browser storage.</p><h2>Changes</h2><p>These terms are effective 28 August 2026. Material changes will appear on this page.</p>`;
   app.innerHTML = shell(`<main id="main" class="legal-page"><p class="eyebrow">LEGAL</p><h1>${privacy ? 'Privacy' : 'Terms'}</h1>${body}<a class="button button-ink" href="/">Return home</a></main>`);
   wirePageChrome(false);
 }
@@ -211,7 +212,7 @@ async function wireRecorder(mode: StorageMode, routeSignal: AbortSignal): Promis
     if (!recordings.length) { list.innerHTML = '<div class="shelf-empty"><b>No recordings yet.</b><span>Your next recording will appear here.</span><a href="#recorder">Record an interaction ↑</a></div>'; return; }
     list.innerHTML = recordings.map((recording, index) => {
       const posterUrl = recording.poster ? URL.createObjectURL(recording.poster) : '';
-      return `<article class="take-card" data-id="${recording.id}">${posterUrl ? `<img src="${posterUrl}" alt="Poster for ${escapeHtml(recording.title)}" width="360" height="230" loading="lazy" />` : '<div class="take-placeholder" aria-hidden="true">NO POSTER</div>'}<div><p class="take-number">RECORDING ${String(recordings.length - index).padStart(2, '0')}</p><h3>${escapeHtml(recording.title)}</h3><p>${escapeHtml(recording.caption || 'No caption')}</p><span>${formatTime(recording.durationMs)} · ${new Date(recording.createdAt).toLocaleDateString()}</span></div><div class="take-tools"><button type="button" data-open="${recording.id}">Open</button><button type="button" data-delete="${recording.id}">Delete</button></div></article>`;
+      return `<article class="take-card" data-id="${recording.id}">${posterUrl ? `<img src="${posterUrl}" alt="Poster for ${escapeHtml(recording.title)}" width="360" height="230" loading="lazy" />` : '<div class="take-placeholder" aria-hidden="true">NO POSTER</div>'}<div><p class="take-number">RECORDING ${String(recordings.length - index).padStart(2, '0')}</p><h3>${escapeHtml(recording.title)}</h3><p>${escapeHtml(recording.caption || 'No caption')}</p><span>${formatTime(recording.durationMs)} · ${new Date(recording.createdAt).toLocaleDateString()}</span></div><div class="take-tools"><button type="button" data-open="${recording.id}">Review ${escapeHtml(recording.title)}</button><button type="button" data-delete="${recording.id}">Delete ${escapeHtml(recording.title)}</button></div></article>`;
     }).join('');
     list.querySelectorAll<HTMLButtonElement>('[data-open]').forEach((button) => button.addEventListener('click', () => { const recording = recordings.find((item) => item.id === button.dataset.open); if (recording) { attachRecording(recording); location.hash = 'recorder'; } }));
     list.querySelectorAll<HTMLButtonElement>('[data-delete]').forEach((button) => button.addEventListener('click', async () => { const recording = recordings.find((item) => item.id === button.dataset.delete); if (!recording || !confirm(`Delete “${recording.title}”? Export a backup first if you need it.`)) return; await removeTake(mode, recording.id); recordings = recordings.filter((item) => item.id !== recording.id); await renderRecordings(); setMessage(demo ? 'Sample removed from the demo workspace. Reset the demo to restore it.' : 'Recording deleted.'); }));
@@ -225,7 +226,7 @@ async function wireRecorder(mode: StorageMode, routeSignal: AbortSignal): Promis
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     if (status === 'requesting' || status === 'recording') return;
-    if (!navigator.mediaDevices?.getDisplayMedia || typeof MediaRecorder === 'undefined') { setMessage('This browser cannot record a screen. Try current Chrome, Edge, or Firefox on a computer.', true); return; }
+    if (!navigator.mediaDevices?.getDisplayMedia || typeof MediaRecorder === 'undefined') { setMessage('This browser cannot record a screen. Use a computer browser with screen capture and WebM support.', true); return; }
     status = 'requesting'; startButton.disabled = true; setMessage('Choose the tab or window you want to record.');
     try {
       const screen = await navigator.mediaDevices.getDisplayMedia({ video: { frameRate: 30 }, audio: true }); streams = [screen];

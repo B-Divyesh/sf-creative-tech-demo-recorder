@@ -27,7 +27,7 @@ See [.factory/demo.md](.factory/demo.md) for the storage contract and verificati
 - Works offline after its first visit.
 - Respects reduced-motion settings and supports keyboard operation.
 
-Browser capture, screen audio, and WebM codecs vary. Current desktop Chrome, Edge, and Firefox support the intended workflow.
+Browser capture, screen audio, and WebM codecs vary by browser and device.
 
 ## Free plan and Loop Pass
 
@@ -75,7 +75,7 @@ Deploy `dist/` without modifying it. `staticwebapp.config.json` supplies routing
 
 Recordings, captions, posters, and beat markers stay in the selected storage namespace. The demo and real workspaces use separate IndexedDB databases.
 
-The repository has no analytics, advertising, CDN scripts, or direct payment-provider code. See the live [privacy page](https://creative-tech-demo-recorder.sociobot.in/privacy).
+The sample export flow sends requests only to the Demo Loop origin. See the live [privacy page](https://creative-tech-demo-recorder.sociobot.in/privacy).
 
 ## License
 

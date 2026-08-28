@@ -1,4 +1,4 @@
-const VERSION = 'demo-loop-v3';
+const VERSION = 'demo-loop-v4';
 const SHELL = `${VERSION}-shell`;
 const RUNTIME = `${VERSION}-runtime`;
 const PRECACHE = [
