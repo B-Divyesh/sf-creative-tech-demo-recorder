@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Demo Loop mark">
+  <rect width="512" height="512" rx="72" fill="#F3EBD8"/>
+  <circle cx="256" cy="256" r="172" fill="none" stroke="#1D1A17" stroke-width="36" stroke-dasharray="760 160"/>
+  <path d="m343 114 79 25-45 69z" fill="#E94E3D" stroke="#1D1A17" stroke-width="16" stroke-linejoin="round"/>
+  <circle cx="256" cy="256" r="74" fill="#007C83" stroke="#1D1A17" stroke-width="24"/>
+  <path d="M238 216v80l68-40z" fill="#FFF9EB"/>
+  <path d="M61 256h76M375 256h76M256 61v76M256 375v76" stroke="#F2C84B" stroke-width="16"/>
+</svg>
