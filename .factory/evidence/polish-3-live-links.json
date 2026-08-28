@@ -1,0 +1,62 @@
+[
+  {
+    "href": "https://creative-tech-demo-recorder.sociobot.in/#main",
+    "status": 200,
+    "location": null
+  },
+  {
+    "href": "https://creative-tech-demo-recorder.sociobot.in/",
+    "status": 200,
+    "location": null
+  },
+  {
+    "href": "https://creative-tech-demo-recorder.sociobot.in/demo",
+    "status": 200,
+    "location": null
+  },
+  {
+    "href": "https://creative-tech-demo-recorder.sociobot.in/#recorder",
+    "status": 200,
+    "location": null
+  },
+  {
+    "href": "https://creative-tech-demo-recorder.sociobot.in/privacy",
+    "status": 200,
+    "location": null
+  },
+  {
+    "href": "https://api.sociobot.in/api/v1/products/creative-tech-demo-recorder/checkout",
+    "status": 303,
+    "location": "https://checkout.dodopayments.com/session/[redacted]"
+  },
+  {
+    "href": "https://creative-tech-demo-recorder.sociobot.in/terms",
+    "status": 200,
+    "location": null
+  },
+  {
+    "href": "https://sociobot.in/",
+    "status": 200,
+    "location": null
+  },
+  {
+    "href": "https://creative-tech-demo-recorder.sociobot.in/demo#main",
+    "status": 200,
+    "location": null
+  },
+  {
+    "href": "https://creative-tech-demo-recorder.sociobot.in/privacy#main",
+    "status": 200,
+    "location": null
+  },
+  {
+    "href": "https://creative-tech-demo-recorder.sociobot.in/terms#main",
+    "status": 200,
+    "location": null
+  },
+  {
+    "href": "https://creative-tech-demo-recorder.sociobot.in/404#main",
+    "status": 200,
+    "location": null
+  }
+]

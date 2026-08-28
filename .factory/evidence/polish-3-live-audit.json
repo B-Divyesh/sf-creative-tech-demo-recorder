@@ -1,0 +1,179 @@
+{
+  "routes": {
+    "/": {
+      "status": 200,
+      "errors": [],
+      "title": "Demo Loop — Record browser interactions",
+      "lang": "en",
+      "h1": [
+        "Record a browser interaction for your portfolio"
+      ],
+      "main": 1,
+      "canonical": "https://creative-tech-demo-recorder.sociobot.in/",
+      "missingAlt": 0
+    },
+    "/demo": {
+      "status": 200,
+      "errors": [],
+      "title": "Demo — Demo Loop",
+      "lang": "en",
+      "h1": [
+        "Review a sample recording"
+      ],
+      "main": 1,
+      "canonical": "https://creative-tech-demo-recorder.sociobot.in/demo",
+      "missingAlt": 0
+    },
+    "/privacy": {
+      "status": 200,
+      "errors": [],
+      "title": "Privacy — Demo Loop",
+      "lang": "en",
+      "h1": [
+        "Privacy"
+      ],
+      "main": 1,
+      "canonical": "https://creative-tech-demo-recorder.sociobot.in/privacy",
+      "missingAlt": 0
+    },
+    "/terms": {
+      "status": 200,
+      "errors": [],
+      "title": "Terms — Demo Loop",
+      "lang": "en",
+      "h1": [
+        "Terms"
+      ],
+      "main": 1,
+      "canonical": "https://creative-tech-demo-recorder.sociobot.in/terms",
+      "missingAlt": 0
+    },
+    "/404": {
+      "status": 200,
+      "errors": [],
+      "title": "Page not found — Demo Loop",
+      "lang": "en",
+      "h1": [
+        "Page not found"
+      ],
+      "main": 1,
+      "canonical": "https://creative-tech-demo-recorder.sociobot.in/404",
+      "missingAlt": 0
+    },
+    "/missing-polish-3": {
+      "status": 404,
+      "errors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ],
+      "title": "Page not found — Demo Loop",
+      "lang": "en",
+      "h1": [
+        "Page not found"
+      ],
+      "main": 1,
+      "canonical": "https://creative-tech-demo-recorder.sociobot.in/404",
+      "missingAlt": 0
+    }
+  },
+  "mobile": {
+    "home": {
+      "heroHeading": "Record a browser interaction for your portfolio",
+      "heroAction": {
+        "x": 22,
+        "y": 442.140625,
+        "width": 274,
+        "height": 52.796875
+      },
+      "heroFacts": {
+        "x": 22,
+        "y": 614.5,
+        "width": 346,
+        "height": 94.390625
+      },
+      "viewportHeight": 844,
+      "overflow": false
+    },
+    "/": {
+      "touchFailures": []
+    },
+    "/demo": {
+      "touchFailures": []
+    },
+    "/privacy": {
+      "touchFailures": []
+    },
+    "/terms": {
+      "touchFailures": []
+    },
+    "/404": {
+      "touchFailures": []
+    },
+    "demoViewport": {
+      "videoBox": {
+        "x": 40,
+        "y": 467.859375,
+        "width": 310,
+        "height": 172.625
+      },
+      "exportBox": {
+        "x": 38,
+        "y": 753.078125,
+        "width": 314,
+        "height": 52.796875
+      }
+    }
+  },
+  "demo": {
+    "databases": [
+      "demo-loop-local",
+      "demo:demo-loop-local"
+    ],
+    "webm": "kinetic-type-controller.webm",
+    "png": "kinetic-type-controller-poster.png",
+    "pngMeta": {
+      "format": "png",
+      "width": 640
+    },
+    "resetCaption": "Turning the dial stretches the projected letters.",
+    "afterExitDatabases": [
+      "demo-loop-local"
+    ],
+    "origins": [
+      "https://creative-tech-demo-recorder.sociobot.in"
+    ]
+  },
+  "offline": {
+    "offlineSample": true,
+    "offlineNotice": true
+  },
+  "focus": {
+    "privacyFocused": true,
+    "homeFocused": true
+  },
+  "assets": {
+    "appleHref": "/icons/apple-touch-icon.png",
+    "appleSizes": "180x180",
+    "appleStatus": 200,
+    "appleMeta": {
+      "width": 180,
+      "height": 180
+    },
+    "socialStatus": 200,
+    "robotsStatus": 200,
+    "sitemapStatus": 200
+  },
+  "a11y": {
+    "/": [],
+    "/demo": [],
+    "/privacy": [],
+    "/terms": [],
+    "/404": [],
+    "/missing-polish-3": []
+  },
+  "directDemo": {
+    "databases": [
+      "demo:demo-loop-local"
+    ],
+    "licenseKeys": []
+  }
+}
