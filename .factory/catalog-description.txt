@@ -1,0 +1,1 @@
+Record browser interactions, mark the key response, and export a portfolio-ready video and poster.

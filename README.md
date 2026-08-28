@@ -1,33 +1,53 @@
 # Demo Loop
 
-Demo Loop turns a fragile browser prototype into a compact, credible proof of interaction. It records a selected tab or window for 20–45 seconds, optionally mixes microphone audio, marks one cause-and-effect beat, and exports a WebM plus a captioned PNG poster. It is built for creative-technology students preparing portfolio work without a video-editing detour.
+Record a selected browser tab or window for 20, 30, or 45 seconds. Mark one interaction beat, then export a WebM and PNG poster.
 
-Everything media-related stays in the browser. There is no upload, account, analytics, or cloud project store. The PWA works offline after its first visit.
+Demo Loop is for creative-technology students preparing portfolio work. Recordings stay in browser storage and remain after a reload.
 
 Live: <https://creative-tech-demo-recorder.sociobot.in>
 
-## What v1 includes
+Sample demo: <https://creative-tech-demo-recorder.sociobot.in/demo>
 
-- Explicit tab/window capture with optional microphone and WebM codec fallback
-- 20, 30, or 45 second cap, early finish, M/S keyboard shortcuts, and live timecode
-- One interaction-beat marker with adjustable poster frame
-- WebM and PNG exports, plus full JSON backup/import
-- IndexedDB take shelf that survives refresh and install
-- Free core workflow with three saved takes; $9 one-time Loop Pass for unlimited history and full-width posters
-- Installable offline shell, privacy and terms pages, reduced motion, and responsive 390px layout
+## Try the isolated demo
 
-Chrome, Edge, and Firefox on desktop provide the strongest capture support. Screen audio depends on the browser and surface selected in its share prompt. Safari/WebKit codec support varies. Demo Loop is for portfolio evidence, not archival recording.
+Open `/demo` or `/?demo=1`. It loads a 24-second controller recording, marked beat, caption, poster, and saved-recording card.
+
+The yellow banner identifies demo mode. Reset restores the sample. Start for real deletes demo storage without reading or changing real recordings.
+
+See [.factory/demo.md](.factory/demo.md) for the storage contract and verification details.
+
+## What it does
+
+- Requests screen access only after you choose to record.
+- Offers 20, 30, and 45 second recording limits.
+- Marks one response with the M key and ends early with S.
+- Exports WebM video, a PNG poster, and a complete JSON backup.
+- Imports a JSON backup and keeps saved recordings in IndexedDB.
+- Works offline after its first visit.
+- Respects reduced-motion settings and supports keyboard operation.
+
+Browser capture, screen audio, and WebM codecs vary. Current desktop Chrome, Edge, and Firefox support the intended workflow.
+
+## Free plan and Loop Pass
+
+The free plan saves three recordings. WebM, PNG, and JSON exports remain available.
+
+Loop Pass costs $9 once. It saves more than three recordings and exports 1920-pixel posters from sources that are large enough.
+
+Purchase and verification use only `https://api.sociobot.in`. Sociobot/Dodo is the merchant of record.
+
+Returned `?license=` tokens are stored under `sb_license:creative-tech-demo-recorder`, removed from the address, and verified. Buyers can also paste a token on another device.
 
 ## Run locally
 
-Requires Node.js 22+.
+Use Node.js 22 or newer.
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Open the printed local URL. Screen capture requires a secure context; `localhost` is considered secure by browsers.
+Open the printed local URL. Browser capture requires a secure context, and browsers treat `localhost` as secure.
 
 ## Test and build
 
@@ -36,15 +56,25 @@ npm test
 npm run build
 ```
 
-`npm test` runs unit tests and Playwright against desktop Chromium and a 390×844 mobile viewport. It covers the capture/export journey with a synthetic media stream, permission denial, axe accessibility, legal routes, and explicit offline reload.
+The test suite covers unit, browser, mobile, accessibility, privacy, payment, route, offline, and every registered claim.
 
-The reproducible deployment command is exactly `npm run build`. Static output lands in `dist/`, with `dist/index.html`, physical `privacy/` and `terms/` route entries, the service worker, manifest, and local assets.
+Each entry in [.factory/claims.json](.factory/claims.json) includes its independent command. The production build is written to `dist/`.
 
-## Privacy and billing
+## Deploy
 
-Recordings, posters, captions, and beat markers are stored locally in IndexedDB. A complete backup can be exported from the take shelf. Purchase checkout and daily license verification use only the Sociobot billing API; Dodo is the merchant of record. The repository contains no product ID or payment-provider integration. Staging uses `pilot-api.sociobot.in`; the factory replaces that base URL at release.
+The static work order runs this command:
 
-See [the opportunity brief](.factory/brief.json), [visual system and asset provenance](.factory/design.md), and [build handoff](.factory/handoff.md).
+```sh
+npm ci && npm test && npm run build
+```
+
+Deploy `dist/` without modifying it. `staticwebapp.config.json` supplies routing, the designed 404, MIME types, caching, CSP, and permissions policy.
+
+## Privacy and ownership
+
+Recordings, captions, posters, and beat markers stay in the selected storage namespace. The demo and real workspaces use separate IndexedDB databases.
+
+The repository has no analytics, advertising, CDN scripts, or direct payment-provider code. See the live [privacy page](https://creative-tech-demo-recorder.sociobot.in/privacy).
 
 ## License
 

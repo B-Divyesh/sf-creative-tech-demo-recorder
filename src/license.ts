@@ -1,10 +1,10 @@
 const SLUG = 'creative-tech-demo-recorder';
-const API_BASE = 'https://pilot-api.sociobot.in/api/v1';
-const LICENSE_KEY = `sb_license:${SLUG}`;
+export const API_BASE = 'https://api.sociobot.in/api/v1';
+export const LICENSE_KEY = `sb_license:${SLUG}`;
 const VERDICT_KEY = `${LICENSE_KEY}:verdict`;
 const DAY = 86_400_000;
 
-type Verdict = { valid: boolean; checkedAt: number; reason?: string };
+export type Verdict = { valid: boolean; checkedAt: number; reason?: string; expires_at?: string | null };
 
 export const checkoutUrl = `${API_BASE}/products/${SLUG}/checkout`;
 
@@ -16,20 +16,19 @@ function cachedVerdict(): Verdict | null {
   }
 }
 
-export function captureReturnedLicense(): void {
+export function captureReturnedLicense(): boolean {
   const url = new URL(window.location.href);
-  const token = url.searchParams.get('license');
-  if (!token) return;
+  const token = url.searchParams.get('license')?.trim();
+  if (!token) return false;
   localStorage.setItem(LICENSE_KEY, token);
   localStorage.setItem(VERDICT_KEY, JSON.stringify({ valid: true, checkedAt: 0 }));
   url.searchParams.delete('license');
-  history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
+  history.replaceState(history.state, '', `${url.pathname}${url.search}${url.hash}`);
+  return true;
 }
 
 export function isOptimisticallyUnlocked(): boolean {
-  const token = localStorage.getItem(LICENSE_KEY);
-  const verdict = cachedVerdict();
-  return Boolean(token && verdict?.valid);
+  return Boolean(localStorage.getItem(LICENSE_KEY) && cachedVerdict()?.valid);
 }
 
 export async function verifyLicense(force = false): Promise<Verdict | null> {
@@ -40,8 +39,8 @@ export async function verifyLicense(force = false): Promise<Verdict | null> {
   try {
     const response = await fetch(`${API_BASE}/products/${SLUG}/verify?license=${encodeURIComponent(token)}`);
     if (!response.ok) throw new Error('License service unavailable');
-    const data = (await response.json()) as { valid: boolean; reason?: string };
-    const verdict = { valid: data.valid, reason: data.reason, checkedAt: Date.now() };
+    const data = (await response.json()) as { valid: boolean; reason?: string; expires_at?: string | null };
+    const verdict = { ...data, checkedAt: Date.now() };
     localStorage.setItem(VERDICT_KEY, JSON.stringify(verdict));
     return verdict;
   } catch {
@@ -50,9 +49,9 @@ export async function verifyLicense(force = false): Promise<Verdict | null> {
 }
 
 export async function restoreLicense(token: string): Promise<Verdict> {
-  localStorage.setItem(LICENSE_KEY, token.trim());
+  const cleanToken = token.trim();
+  if (!cleanToken) return { valid: false, checkedAt: Date.now(), reason: 'invalid' };
+  localStorage.setItem(LICENSE_KEY, cleanToken);
   localStorage.removeItem(VERDICT_KEY);
-  const verdict = await verifyLicense(true);
-  if (!verdict) return { valid: false, checkedAt: Date.now(), reason: 'invalid' };
-  return verdict;
+  return (await verifyLicense(true)) || { valid: false, checkedAt: Date.now(), reason: 'unavailable' };
 }

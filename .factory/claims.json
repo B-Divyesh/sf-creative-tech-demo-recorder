@@ -1,0 +1,107 @@
+[
+  {
+    "id": "sample-demo-isolated",
+    "claim": "The sample demo opens in one click and uses storage separate from real recordings.",
+    "where": "home action, demo banner, README",
+    "test": "npm run test:e2e -- --grep @claim:sample-demo-isolated",
+    "sandbox": "fresh browser; seed a private real recording, enter /demo, reset and exit; assert the real database is unchanged"
+  },
+  {
+    "id": "local-only-network",
+    "claim": "Recordings stay in the browser and are not uploaded.",
+    "where": "home facts, recorder, privacy, README",
+    "test": "npm run test:e2e -- --grep @claim:local-only-network",
+    "sandbox": "fresh /?demo=1 context; record every request through both exports and assert only the product origin"
+  },
+  {
+    "id": "offline-reload",
+    "claim": "The installed app works offline after the first visit.",
+    "where": "README, offline notice",
+    "test": "npm run test:e2e -- --grep @claim:offline-reload",
+    "sandbox": "fresh /demo context; install the worker, reload, set the context offline, reload, and assert sample data"
+  },
+  {
+    "id": "capture-length-options",
+    "claim": "Users can choose a 20, 30, or 45 second recording limit.",
+    "where": "home facts, recorder, README",
+    "test": "npm run test:e2e -- --grep @claim:capture-length-options",
+    "sandbox": "fresh /demo context; select each duration and assert the timeline limit"
+  },
+  {
+    "id": "explicit-capture",
+    "claim": "Screen permission is requested only after the record action.",
+    "where": "recorder, privacy, README",
+    "test": "npm run test:e2e -- --grep @claim:explicit-capture",
+    "sandbox": "fresh real context with an instrumented capture API; assert zero calls before and one after the action"
+  },
+  {
+    "id": "keyboard-motion",
+    "claim": "The interface supports keyboard focus and reduced-motion settings.",
+    "where": "README",
+    "test": "npm run test:e2e -- --grep @claim:keyboard-motion",
+    "sandbox": "fresh reduced-motion context; use the keyboard skip link and assert motion duration is effectively zero"
+  },
+  {
+    "id": "webm-export",
+    "claim": "Exports a recording as WebM.",
+    "where": "home, recorder, README",
+    "test": "npm run test:e2e -- --grep @claim:webm-export",
+    "sandbox": "fresh /demo context; export and assert the downloaded name and non-empty file"
+  },
+  {
+    "id": "poster-export",
+    "claim": "Exports the marked frame as a PNG poster.",
+    "where": "home, recorder, README",
+    "test": "npm run test:e2e -- --grep @claim:poster-export",
+    "sandbox": "fresh /demo context; export and decode the downloaded PNG"
+  },
+  {
+    "id": "local-persistence",
+    "claim": "Saved recordings remain after a reload.",
+    "where": "saved recordings, README",
+    "test": "npm run test:e2e -- --grep @claim:local-persistence",
+    "sandbox": "fresh real context with synthetic display media; record, save, reload, and assert the recording"
+  },
+  {
+    "id": "backup-roundtrip",
+    "claim": "Exports and imports a complete JSON backup.",
+    "where": "saved recordings, README, privacy",
+    "test": "npm run test:e2e -- --grep @claim:backup-roundtrip",
+    "sandbox": "fresh /demo context; export the JSON, inspect embedded media, delete the sample, then import and assert restoration"
+  },
+  {
+    "id": "free-save-limit",
+    "claim": "The free plan saves three recordings while WebM and PNG exports remain available.",
+    "where": "Loop Pass section, terms, README",
+    "test": "npm run test:e2e -- --grep @claim:free-save-limit",
+    "sandbox": "fresh real context with three seeded recordings; make a fourth and assert three persisted plus both export controls"
+  },
+  {
+    "id": "paid-unlimited",
+    "claim": "A verified Loop Pass saves more than three recordings.",
+    "where": "Loop Pass section, terms, README",
+    "test": "npm run test:e2e -- --grep @claim:paid-unlimited",
+    "sandbox": "fresh real context; mock a valid production-origin returned license, seed three recordings, make a fourth, and assert four saved"
+  },
+  {
+    "id": "paid-poster",
+    "claim": "A verified Loop Pass exports full-width 1920-pixel posters when the source is large enough.",
+    "where": "Loop Pass section, README",
+    "test": "npm run test:e2e -- --grep @claim:paid-poster",
+    "sandbox": "fresh real context with cached valid verdict and 1920px synthetic media; export and decode poster width"
+  },
+  {
+    "id": "license-restore",
+    "claim": "A license can be restored on another browser through the Sociobot verification API.",
+    "where": "Loop Pass section, privacy, README",
+    "test": "npm run test:e2e -- --grep @claim:license-restore",
+    "sandbox": "fresh real context; paste a token, mock the documented verdict, assert unlock and the exact production API origin"
+  },
+  {
+    "id": "live-checkout",
+    "claim": "Loop Pass costs $9 once and checkout starts through Sociobot's hosted Dodo checkout.",
+    "where": "Loop Pass section, terms, README",
+    "test": "npm run test:e2e -- --grep @claim:live-checkout",
+    "sandbox": "fresh page plus live read-only HTTP; assert the exact Sociobot link, 303 Dodo redirect, and hosted checkout $9 content"
+  }
+]

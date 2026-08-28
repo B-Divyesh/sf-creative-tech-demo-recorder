@@ -1,8 +1,12 @@
-const VERSION = 'demo-loop-v1';
+const VERSION = 'demo-loop-v2';
 const SHELL = `${VERSION}-shell`;
 const RUNTIME = `${VERSION}-runtime`;
 const PRECACHE = [
   '/',
+  '/demo',
+  '/privacy',
+  '/terms',
+  '/404',
   '/offline.html',
   '/manifest.webmanifest',
   '/assets/app.js',
@@ -11,6 +15,8 @@ const PRECACHE = [
   '/fonts/ibm-plex-mono.woff2',
   '/assets/hero-risograph-768.webp',
   '/assets/hero-risograph.webp',
+  '/assets/sample-controller.webm',
+  '/assets/sample-controller-poster.png',
   '/icons/icon.svg',
   '/icons/icon-192.png',
   '/icons/icon-512.png',

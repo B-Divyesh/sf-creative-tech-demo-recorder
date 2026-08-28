@@ -1,17 +1,42 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
-test('home is clear, keyboard reachable, and has no serious accessibility issues', async ({ page }) => {
+test('home is clear, keyboard reachable, and accessible', async ({ page }) => {
   const errors: string[] = [];
   page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Capture the cause/);
-  await expect(page.getByRole('button', { name: /Choose a tab/ })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Record a portfolio interaction demo');
+  await expect(page.getByRole('link', { name: 'Try it with sample data' })).toBeVisible();
   await page.keyboard.press('Tab');
   await expect(page.locator('.skip-link')).toBeFocused();
   const results = await new AxeBuilder({ page }).analyze();
   expect(results.violations.filter((violation) => ['serious', 'critical'].includes(violation.impact || ''))).toEqual([]);
   expect(errors).toEqual([]);
+});
+
+test('demo and legal routes have their own titles, metadata, focus, and landmarks', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('link', { name: 'Privacy', exact: true }).first().click();
+  await expect(page).toHaveTitle('Privacy — Demo Loop');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Privacy');
+  await expect(page.getByRole('heading', { level: 1 })).toBeFocused();
+  await page.goBack();
+  await expect(page.getByRole('heading', { level: 1 })).toBeFocused();
+  await page.goto('/terms');
+  await expect(page).toHaveTitle('Terms — Demo Loop');
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/terms$/);
+  await page.goto('/demo');
+  await expect(page).toHaveTitle('Demo — Demo Loop');
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /social-card\.jpg$/);
+  await expect(page.locator('main')).toHaveCount(1);
+});
+
+test('unknown paths render the designed 404 with recovery links', async ({ page }) => {
+  await page.goto('/missing-page');
+  await expect(page).toHaveTitle('Page not found — Demo Loop');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Page not found');
+  await expect(page.getByRole('link', { name: 'Return home' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Open sample demo' })).toBeVisible();
 });
 
 test('permission denial leaves a useful retry state', async ({ page }) => {
@@ -24,46 +49,19 @@ test('permission denial leaves a useful retry state', async ({ page }) => {
   await expect(page.getByRole('button', { name: /Choose a tab/ })).toBeEnabled();
 });
 
-test('capture, mark, finish, and export controls work end to end', async ({ page, browserName }) => {
-  test.skip(browserName !== 'chromium');
-  await page.addInitScript(() => {
-    Object.defineProperty(navigator.mediaDevices, 'getDisplayMedia', { configurable: true, value: async () => {
-      const canvas = document.createElement('canvas');
-      canvas.width = 640;
-      canvas.height = 360;
-      const context = canvas.getContext('2d')!;
-      context.fillStyle = '#007c83';
-      context.fillRect(0, 0, 640, 360);
-      context.fillStyle = '#f2c84b';
-      context.fillRect(100, 100, 180, 160);
-      return canvas.captureStream(20);
-    }});
+test('mobile layout has no horizontal overflow and keeps primary targets large', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile');
+  await page.goto('/demo');
+  await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+  const size = await page.getByRole('button', { name: /Choose a tab/ }).boundingBox();
+  expect(size?.height).toBeGreaterThanOrEqual(44);
+  await expect(page.getByRole('navigation', { name: 'Primary navigation' })).toBeVisible();
+});
+
+for (const route of ['/', '/demo', '/privacy', '/terms', '/404']) {
+  test(`route ${route} has no serious or critical axe findings`, async ({ page }) => {
+    await page.goto(route);
+    const results = await new AxeBuilder({ page }).analyze();
+    expect(results.violations.filter((violation) => ['serious', 'critical'].includes(violation.impact || ''))).toEqual([]);
   });
-  await page.goto('/#recorder');
-  await page.getByLabel('One-line caption').fill('A dial changes the shape field.');
-  await page.getByRole('button', { name: /Choose a tab/ }).click();
-  await expect(page.getByText('CAPTURING / LOCAL')).toBeVisible();
-  await page.getByRole('button', { name: /Mark interaction/ }).click();
-  await page.waitForTimeout(500);
-  await page.getByRole('button', { name: /Finish take/ }).click();
-  await expect(page.getByRole('button', { name: 'Export WebM' })).toBeVisible({ timeout: 15_000 });
-  await expect(page.getByRole('button', { name: 'Export poster' })).toBeVisible();
-  await expect(page.locator('.take-card')).toHaveCount(1);
-});
-
-test('privacy and terms render as first-class routes', async ({ page }) => {
-  await page.goto('/privacy');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Privacy, in plain ink');
-  await page.goto('/terms');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Terms of use');
-});
-
-test('app shell reloads offline after installation', async ({ page, context }) => {
-  await page.goto('/');
-  await page.evaluate(() => navigator.serviceWorker.ready);
-  await page.reload();
-  await context.setOffline(true);
-  await page.reload();
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Capture the cause');
-  await expect(page.getByText(/Offline/).first()).toBeVisible();
-});
+}
