@@ -1,1 +1,1 @@
-Record a browser interaction, mark its response, and export a portfolio video and poster.
+Record a browser prototype, mark its response, and export a short portfolio video and poster.

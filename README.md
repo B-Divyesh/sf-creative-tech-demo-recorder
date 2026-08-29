@@ -23,7 +23,7 @@ See [.factory/demo.md](.factory/demo.md) for the storage contract and verificati
 - Offers 20, 30, and 45 second recording limits.
 - Marks one response with the M key and ends early with S.
 - Exports WebM video, a PNG poster, and a complete JSON backup.
-- Imports a JSON backup and keeps saved recordings in IndexedDB.
+- Imports a JSON backup and keeps saved recordings in browser storage.
 - Works offline after its first visit.
 - Respects reduced-motion settings and supports keyboard operation.
 
@@ -73,7 +73,7 @@ Deploy `dist/` without modifying it. `staticwebapp.config.json` supplies routing
 
 ## Privacy and ownership
 
-Recordings, captions, posters, and beat markers stay in the browser workspace you opened. The demo and real workspaces use separate IndexedDB databases.
+Recordings, captions, posters, and beat markers stay in the browser workspace you opened. The demo and real workspaces store recordings separately in your browser.
 
 The sample export flow sends requests only to the Demo Loop origin. See the live [privacy page](https://creative-tech-demo-recorder.sociobot.in/privacy).
 

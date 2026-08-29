@@ -1,6 +1,6 @@
 # Demo Loop copy audit
 
-Audited 2026-08-28 against the rendered home and demo routes. Counts treat a hyphenated term, filename, or number as one word.
+Audited 2026-08-29 against the rendered home and demo routes and the README. Counts treat a hyphenated term, filename, or number as one word.
 
 ## First screen
 
@@ -78,6 +78,15 @@ The first screen states the job, audience, action, and result in one breath. Its
 | Demo status | Play it, move the marked beat, or export both files. | 10 | Pass |
 
 No audited sentence exceeds 22 words. No banned marketing word appears in visitor-facing copy.
+
+## README storage wording
+
+| Location | Sentence | Words | Result |
+| --- | --- | ---: | --- |
+| Capability | Imports a JSON backup and keeps saved recordings in browser storage. | 10 | Pass |
+| Privacy | The demo and real workspaces store recordings separately in your browser. | 11 | Pass |
+
+The README names the user-visible browser behavior. Implementation names remain in the maintainer-facing demo contract.
 
 ## Terminology
 
