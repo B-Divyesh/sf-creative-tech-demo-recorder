@@ -4,7 +4,7 @@
     "claim": "The sample demo opens in one click and uses storage separate from real recordings.",
     "where": "home action, demo banner, README",
     "test": "npm run test:e2e -- --grep @claim:sample-demo-isolated",
-    "sandbox": "fresh browser; seed a private real recording, enter /demo, reset and exit; assert the real database is unchanged"
+    "sandbox": "fresh /?demo=1 browser; assert only demo storage opens and no license key is read; seed a private real recording, reset and exit; assert real data is unchanged"
   },
   {
     "id": "local-only-network",
