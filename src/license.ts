@@ -21,7 +21,9 @@ export function captureReturnedLicense(): boolean {
   const token = url.searchParams.get('license')?.trim();
   if (!token) return false;
   localStorage.setItem(LICENSE_KEY, token);
-  localStorage.setItem(VERDICT_KEY, JSON.stringify({ valid: true, checkedAt: 0 }));
+  // A returned token is only a credential, not proof that the license is active.
+  // Remove any verdict from the previous token and wait for Sociobot to verify it.
+  localStorage.removeItem(VERDICT_KEY);
   url.searchParams.delete('license');
   history.replaceState(history.state, '', `${url.pathname}${url.search}${url.hash}`);
   return true;

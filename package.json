@@ -7,10 +7,10 @@
     "dev": "vite --host 0.0.0.0",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "preview:test": "node tools/serve-dist.mjs --port 4173",
-    "test": "vitest run src && playwright test",
+    "preview:test": "node tools/serve-dist.mjs",
+    "test": "vitest run src && npm run test:e2e",
     "test:unit": "vitest run src",
-    "test:e2e": "playwright test"
+    "test:e2e": "node tools/run-e2e.mjs"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.2",

@@ -47,14 +47,24 @@ async function recordOnce(page: Page, name: string): Promise<void> {
 
 test('@claim:sample-demo-isolated opens a finished sample and never changes the real database', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name === 'mobile');
-  await page.goto('/');
+  await page.addInitScript(() => {
+    (window as unknown as { storageReads: string[] }).storageReads = [];
+    const getItem = Storage.prototype.getItem;
+    Storage.prototype.getItem = function instrumentedGetItem(key) {
+      (window as unknown as { storageReads: string[] }).storageReads.push(String(key));
+      return getItem.call(this, key);
+    };
+  });
+  await page.goto('/?demo=1');
+  await expect(page.getByText('Demo — sample data, nothing is saved')).toBeVisible();
+  await expect(page.getByText('SAMPLE RECORDING / ISOLATED')).toBeVisible();
+  expect(await page.evaluate(() => indexedDB.databases().then((items) => items.map((item) => item.name)))).toEqual(['demo:demo-loop-local']);
+  expect(await page.evaluate(() => (window as unknown as { storageReads: string[] }).storageReads.filter((key) => key.startsWith('sb_license:')))).toEqual([]);
+
   await page.evaluate(async () => {
     const db = await new Promise<IDBDatabase>((resolve, reject) => { const request = indexedDB.open('demo-loop-local', 1); request.onupgradeneeded = () => request.result.createObjectStore('takes', { keyPath: 'id' }); request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error); });
     await new Promise<void>((resolve, reject) => { const transaction = db.transaction('takes', 'readwrite'); transaction.objectStore('takes').put({ id: 'real-recording', title: 'Private real recording', caption: '', beatMs: 1, durationMs: 2, createdAt: new Date().toISOString(), mimeType: 'video/webm', video: new Blob(['real']) }); transaction.oncomplete = () => resolve(); transaction.onerror = () => reject(transaction.error); }); db.close();
   });
-  await page.getByRole('link', { name: 'Try it with sample data' }).click();
-  await expect(page.getByText('Demo — sample data, nothing is saved')).toBeVisible();
-  await expect(page.getByText('SAMPLE RECORDING / ISOLATED')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Kinetic type controller' })).toBeVisible();
   expect(await page.evaluate(() => indexedDB.databases().then((items) => items.map((item) => item.name).sort()))).toEqual(['demo-loop-local', 'demo:demo-loop-local']);
   page.once('dialog', (dialog) => dialog.accept()); await page.getByRole('button', { name: 'Delete' }).click();
@@ -71,7 +81,7 @@ test('@claim:local-only-network keeps the complete sample flow on the product or
   await page.goto('/?demo=1'); await expect(page.getByText('SAMPLE RECORDING / ISOLATED')).toBeVisible();
   const video = page.waitForEvent('download'); await page.getByRole('button', { name: 'Export WebM' }).click(); await video;
   const poster = page.waitForEvent('download'); await page.getByRole('button', { name: 'Export PNG poster' }).click(); await poster;
-  expect([...origins]).toEqual(['http://127.0.0.1:4173']);
+  expect([...origins]).toEqual([new URL(page.url()).origin]);
 });
 
 test('@claim:offline-reload reloads the sample workspace offline', async ({ page, context }, testInfo) => {

@@ -6,7 +6,7 @@ import type { CaptureStatus, DemoTake } from './types';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 const SITE = 'https://creative-tech-demo-recorder.sociobot.in';
-const BUILD = '1.3.0';
+const BUILD = '1.3.1';
 const escapeHtml = (value: string) => value.replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character] || character);
 
 type PageMeta = { title: string; description: string; canonical: string };

@@ -16,6 +16,26 @@ test('home is clear, keyboard reachable, and accessible', async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
+test('the complete first-screen message fits in the mobile viewport', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile');
+  await page.goto('/');
+  const firstScreenCopy = [
+    'Record a browser interaction for your portfolio',
+    'For creative-technology students who need a 20–45 second video of a prototype working.',
+    'Try it with sample data',
+    'Opens a finished recording, poster, and marked beat.',
+    'Media stays in this browser',
+    'Nothing is uploaded',
+    'Choose 20, 30, or 45 seconds',
+  ];
+  for (const text of firstScreenCopy) {
+    const box = await page.getByText(text, { exact: true }).first().boundingBox();
+    expect(box, `${text} should be visible`).not.toBeNull();
+    expect(box!.y, `${text} should start inside the viewport`).toBeGreaterThanOrEqual(0);
+    expect(box!.y + box!.height, `${text} should end inside the viewport`).toBeLessThanOrEqual(844);
+  }
+});
+
 test('demo and legal routes have their own titles, metadata, focus, and landmarks', async ({ page }) => {
   await page.goto('/');
   await page.getByRole('link', { name: 'Privacy', exact: true }).first().click();
@@ -142,6 +162,29 @@ test('factory footer uses the reachable canonical destination', async ({ page, r
   const link = page.getByRole('link', { name: 'Built by Param Factory' });
   await expect(link).toHaveAttribute('href', 'https://sociobot.in/');
   expect((await request.get('https://sociobot.in/', { timeout: 15_000 })).status()).toBe(200);
+});
+
+test('a returned license waits for Sociobot verification before enabling paid features', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name === 'mobile');
+  let releaseVerification!: () => void;
+  const verificationMayFinish = new Promise<void>((resolve) => { releaseVerification = resolve; });
+  let verificationStarted!: () => void;
+  const verificationDidStart = new Promise<void>((resolve) => { verificationStarted = resolve; });
+  await page.route('https://api.sociobot.in/api/v1/products/creative-tech-demo-recorder/verify?license=unverified-token', async (route) => {
+    verificationStarted();
+    await verificationMayFinish;
+    await route.fulfill({ json: { valid: false, reason: 'invalid', expires_at: null } });
+  });
+
+  await page.goto('/?license=unverified-token');
+  await verificationDidStart;
+  await expect(page).toHaveURL('/');
+  await expect(page.getByText('No license on this browser.')).toBeVisible();
+  expect(await page.evaluate(() => localStorage.getItem('sb_license:creative-tech-demo-recorder'))).toBe('unverified-token');
+  expect(await page.evaluate(() => localStorage.getItem('sb_license:creative-tech-demo-recorder:verdict'))).toBeNull();
+
+  releaseVerification();
+  await expect(page.getByText('License no longer active. Free recording remains available.')).toBeVisible();
 });
 
 for (const route of ['/', '/demo', '/privacy', '/terms', '/404']) {
