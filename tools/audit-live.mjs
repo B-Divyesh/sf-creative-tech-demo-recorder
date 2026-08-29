@@ -194,6 +194,27 @@ try {
   passed('demo reset and exit preserve real recordings and discard demo storage');
   await isolationContext.close();
 
+  const licenseContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  const licensePage = await licenseContext.newPage();
+  let releaseVerification;
+  const verificationMayFinish = new Promise((resolve) => { releaseVerification = resolve; });
+  let verificationStarted;
+  const verificationDidStart = new Promise((resolve) => { verificationStarted = resolve; });
+  await licensePage.route('https://api.sociobot.in/api/v1/products/creative-tech-demo-recorder/verify?license=unverified-live-token', async (route) => {
+    verificationStarted();
+    await verificationMayFinish;
+    await route.fulfill({ json: { valid: false, reason: 'invalid', expires_at: null } });
+  });
+  await licensePage.goto(`${base}/?license=unverified-live-token`, { waitUntil: 'domcontentloaded' });
+  await verificationDidStart;
+  await licensePage.getByText('No license on this browser.').waitFor();
+  assert.equal(await licensePage.evaluate(() => localStorage.getItem('sb_license:creative-tech-demo-recorder')), 'unverified-live-token');
+  assert.equal(await licensePage.evaluate(() => localStorage.getItem('sb_license:creative-tech-demo-recorder:verdict')), null);
+  releaseVerification();
+  await licensePage.getByText('License no longer active. Free recording remains available.').waitFor();
+  passed('returned license tokens stay locked until Sociobot verification completes');
+  await licenseContext.close();
+
   const offlineContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
   const offlinePage = await offlineContext.newPage();
   offlinePage.on('console', (message) => {

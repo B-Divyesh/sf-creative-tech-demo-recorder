@@ -88,6 +88,14 @@ No audited sentence exceeds 22 words. No banned marketing word appears in visito
 
 The README names the user-visible browser behavior. Implementation names remain in the maintainer-facing demo contract.
 
+## Catalog
+
+| Sentence | Words | Characters | Result |
+| --- | ---: | ---: | --- |
+| Record a browser interaction, mark its response, and export a portfolio video and poster. | 14 | 89 | Pass |
+
+The catalog sentence starts with a verb and stays below 120 characters.
+
 ## Terminology
 
 | Concept | Required term |

@@ -1,0 +1,14 @@
+{
+  "url": "https://creative-tech-demo-recorder.sociobot.in/?demo=1",
+  "loadMs": 749,
+  "errors": [],
+  "a11y": {
+    "title": "Demo — Demo Loop",
+    "lang": "en",
+    "h1": 1,
+    "main": true,
+    "imgsMissingAlt": 0,
+    "buttonsUnlabeled": 0,
+    "textLength": 1555
+  }
+}
