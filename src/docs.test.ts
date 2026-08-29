@@ -9,4 +9,11 @@ describe('visitor documentation', () => {
     expect(readme).toContain('The demo and real workspaces store recordings separately in your browser.');
     expect(readme).not.toContain('IndexedDB');
   });
+
+  it('keeps the catalog description verb-first and within 120 characters', async () => {
+    const description = (await readFile(new URL('../.factory/catalog-description.txt', import.meta.url), 'utf8')).trim();
+
+    expect(description).toMatch(/^Record\b/);
+    expect(description.length).toBeLessThanOrEqual(120);
+  });
 });

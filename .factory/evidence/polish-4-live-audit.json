@@ -1,0 +1,72 @@
+{
+  "base": "https://creative-tech-demo-recorder.sociobot.in",
+  "checkedAt": "2026-08-29T00:25:19.620Z",
+  "checks": [
+    {
+      "name": "route titles, metadata, landmarks, axe, mobile targets, and overflow",
+      "passed": true,
+      "detail": [
+        "/",
+        "/demo",
+        "/privacy",
+        "/terms",
+        "/404"
+      ]
+    },
+    {
+      "name": "unknown paths return the designed HTTP 404",
+      "passed": true,
+      "detail": true
+    },
+    {
+      "name": "first mobile screen states the job, audience, action, result, and three facts",
+      "passed": true,
+      "detail": true
+    },
+    {
+      "name": "route navigation and browser Back restore h1 focus",
+      "passed": true,
+      "detail": true
+    },
+    {
+      "name": "query demo is one-click, first-viewport ready, and opens only isolated demo storage",
+      "passed": true,
+      "detail": true
+    },
+    {
+      "name": "live sample exports WebM and PNG with same-origin requests only",
+      "passed": true,
+      "detail": {
+        "origins": [
+          "https://creative-tech-demo-recorder.sociobot.in"
+        ]
+      }
+    },
+    {
+      "name": "Reset demo restores the bundled sample",
+      "passed": true,
+      "detail": true
+    },
+    {
+      "name": "demo reset and exit preserve real recordings and discard demo storage",
+      "passed": true,
+      "detail": true
+    },
+    {
+      "name": "service-worker-controlled demo reloads offline with its sample",
+      "passed": true,
+      "detail": true
+    },
+    {
+      "name": "links, app assets, checkout redirect, and security headers respond correctly",
+      "passed": true,
+      "detail": true
+    },
+    {
+      "name": "all audited live contexts have zero console errors",
+      "passed": true,
+      "detail": true
+    }
+  ],
+  "consoleErrors": []
+}
